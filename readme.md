@@ -11,3 +11,9 @@
 <li>update the DATABASE config in our settings.py file.</li>
 <li>add the database service in <b>docker-compose.yml</b></li>
 </ol>
+
+## Chapter 3  Custom User Model
+* Add custom user model to add custom fields.
+
+## Chapter 4 Pages App
+* use of `django.views.generic`'s TemplateView.
