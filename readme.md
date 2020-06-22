@@ -17,3 +17,7 @@
 
 ## Chapter 4 Pages App
 * use of `django.views.generic`'s TemplateView.
+
+## Chapter 5 User Registration
+* user login/logout using simple auth app.
+* user registration using costom view.
