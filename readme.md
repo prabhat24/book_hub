@@ -20,4 +20,7 @@
 
 ## Chapter 5 User Registration
 * user login/logout using simple auth app.
-* user registration using costom view.
+* user registration using custom view.
+
+## Chapter 7 Advanced User Registration using allauth
+
