@@ -23,4 +23,12 @@
 * user registration using custom view.
 
 ## Chapter 7 Advanced User Registration using allauth
+* migrate from auth to allauth
+* implement social login
 
+## chapter 8 Environment Variables
+* hide all secrets and configurable data in .env(added to .gitignore)
+
+## chapter 9 Customize Emails
+* configure smtp.
+* customize the default email templates.
