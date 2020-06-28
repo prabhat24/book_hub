@@ -1,0 +1,27 @@
+{% extends "_base.html" %}
+
+{% block title %}
+    book list
+{% endblock %}
+
+{% block content %}
+    <div class="card-deck">
+        {% for book in books %}
+            <div class="card text-red bg-dark mb-3" style="width: 18rem;">
+              <img src="..." class="card-img-top" alt="...">
+              <div class="card-body">
+                <h5 class="card-title"><a href='{{ book.get_absolute_url }}'> {{ book.title }} </a></h5>
+                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+              </div>
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item">author: {{ book.author }}</li>
+                <li class="list-group-item">price: {{ book.price }}</li>
+              </ul>
+              <div class="card-body">
+                <a href="#" class="card-link">buy now</a>
+                <a href="#" class="card-link">add to cart</a>
+              </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
