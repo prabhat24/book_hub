@@ -32,3 +32,7 @@
 ## chapter 9 Customize Emails
 * configure smtp.
 * customize the default email templates.
+
+## chapter 10 
+* create book model
+* views to look into books
