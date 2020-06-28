@@ -136,7 +136,14 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
+# clinet based url paths
 STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
+
+# server based paths
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# Redirects
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
 
