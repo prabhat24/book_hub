@@ -10,17 +10,13 @@
     <title>
          {% block title %}{% endblock %} </title>
     <!-- Bootstrap core CSS -->
-    <link href="http://v4-alpha.getbootstrap.com/dist/css/bootstrap.min.css"
-          rel="stylesheet">
+    <link href="http://v4-alpha.getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom styles for this template -->
-    <link href=
-                  "http://v4-alpha.getbootstrap.com/examples/dashboard/dashboard.css"
-          rel="stylesheet">
+    <link href="http://v4-alpha.getbootstrap.com/examples/dashboard/dashboard.css" rel="stylesheet">
     <style>
         body {
           font-family: Arial, Helvetica, sans-serif;
         }
-
         * {
           box-sizing: border-box;
         }
@@ -68,7 +64,21 @@
           background-color: #dd4b39;
           color: white;
         }
+        .card-deck .card:not(:last-child) {
+            margin-right: 0px;
+        }
+        .card-deck .card {
+            -ms-flex: 1 0 0%;
+            flex: 1 0 0%;
+            margin-bottom: 0;
+            margin-left: 0px;
+        }
+        .list-group-item {
+            padding: 0.25rem 1.25rem;
+        }
     </style>
+    {% block style_block %}
+    {% endblock %}
 </head>
 <body>
 <nav class="navbar navbar-toggleable-md navbar-inverse fixed-top bg-inverse">
@@ -129,13 +139,13 @@
 
 <!-- Bootstrap core JavaScript ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
-<script
-        src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-<script
-        src="http://v4-alpha.getbootstrap.com/dist/js/bootstrap.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="http://v4-alpha.getbootstrap.com/dist/js/bootstrap.min.js"></script>
 <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-<script
-        src="http://v4-alpha.getbootstrap.com/assets/js/ie10-viewport-bug-workaround.js"></script>
+<script src="http://v4-alpha.getbootstrap.com/assets/js/ie10-viewport-bug-workaround.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 <footer class="page-footer font-small blue">
     <div class="footer-copyright text-center py-3">© Anzo Rage 2020 Copyright:
         <a href="https://github.com/prabhat24"> </a>

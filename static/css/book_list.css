@@ -1,0 +1,22 @@
+.list-group-item {
+    padding: 0.25rem 1.25rem;
+}
+.card {
+    border-radius: 1.25rem;
+}
+.btn-lg {
+    font-size: 0.8rem;
+    border-radius: 2.3rem;
+}
+.card-body {
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    min-height: 1px;
+    padding : 1px;
+    text-align: center;
+    font-color:red;
+}
+a:link { COLOR: #C8CC3B ; TEXT-DECORATION: none; font-weight: normal }
+a:visited { COLOR: #C8CC3B ; TEXT-DECORATION: none; font-weight: normal }
+a:active { COLOR: #C8CC3B ; TEXT-DECORATION: none }
+a:hover { COLOR: #D5DA38 ; TEXT-DECORATION: none; font-weight: none }
