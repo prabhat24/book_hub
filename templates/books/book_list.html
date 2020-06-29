@@ -1,27 +1,36 @@
 {% extends "_base.html" %}
-
+{% load static %}
+{% block style_block %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/book_list.css' %}">
+{% endblock %}
 {% block title %}
     book list
 {% endblock %}
-
 {% block content %}
-    <div class="card-deck">
-        {% for book in books %}
-            <div class="card text-red bg-dark mb-3" style="width: 18rem;">
-              <img src="..." class="card-img-top" alt="...">
-              <div class="card-body">
-                <h5 class="card-title"><a href='{{ book.get_absolute_url }}'> {{ book.title }} </a></h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-              </div>
-              <ul class="list-group list-group-flush">
-                <li class="list-group-item">author: {{ book.author }}</li>
-                <li class="list-group-item">price: {{ book.price }}</li>
-              </ul>
-              <div class="card-body">
-                <a href="#" class="card-link">buy now</a>
-                <a href="#" class="card-link">add to cart</a>
-              </div>
+<div class="row row-cols-1 row-cols-md-5">
+    {% for book in books %}
+    <div class="col mb-4">
+        <div class="card border-warning text-white bg-dark lg-3" style="max-width: 100%;">
+            {% if book.cover %}
+            <img src="{{ book.cover.url }}" class="card-img-top" alt="image not available">
+            {% else %}
+            <img src="{% static 'images/not_avaliable_cover.jpg' %}" class="card-img-top" alt="...">
+            {% endif %}
+            <div class="card-body">
+                <h10 class="card-title"><a href='{{ book.get_absolute_url }}'> {{ book.title }} </a></h10>
+                <p class="card-text"></p>
             </div>
-        {% endfor %}
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item list-group-item-dark">author: {{ book.author }}</li>
+                <li class="list-group-item list-group-item-light"><strong>$</strong>{{ book.price }}</li>
+            </ul>
+            <div class="card-body">
+                <a href="#" class="btn btn-primary btn-lg"><strong>Buy Now</strong></a>
+            </div>
+        </div>
     </div>
+    {% endfor %}
+</div>
 {% endblock %}

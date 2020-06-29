@@ -36,3 +36,6 @@
 ## chapter 10 
 * create book model
 * views to look into books
+
+## chapter 11 file/image uploads
+* upload of media book covers

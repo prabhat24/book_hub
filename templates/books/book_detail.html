@@ -1,11 +1,12 @@
 {% extends "_base.html" %}
-
+{% load static %}
 {% block title %}
     {{ book.title }}
 {% endblock %}
 
 {% block content %}
     <h2>{{ book.title }}</h2>
+    <img src="{{ book.cover.url }}" alt="image not available">
     <p>Author: {{ book.author }}</p>
     <p>Price: {{ book.price }}</p>
 {% endblock %}
