@@ -1,12 +1,53 @@
 {% extends "_base.html" %}
+{% load crispy_forms_tags %}
 {% load static %}
 {% block title %}
     {{ book.title }}
 {% endblock %}
-
-{% block content %}
-    <h2>{{ book.title }}</h2>
-    <img src="{{ book.cover.url }}" alt="image not available">
-    <p>Author: {{ book.author }}</p>
-    <p>Price: {{ book.price }}</p>
+{% block style_block %}
+    <link rel="stylesheet" href="{% static 'css/book_detail.css' %}">
 {% endblock %}
+{% block content %}
+     <div class="card" style="width: 500px;">
+        <div class="row no-gutters">
+            <div class="col-sm-5">
+                {% if  book.cover %}
+                <img class="card-img" src="{{ book.cover.url }}" alt="image not available">
+                {% else %}
+                <img class="card-img" src="{% static 'images/not_avaliable_cover.jpg' %}" alt="image not available">
+                {% endif %}
+            </div>
+            <div class="col-sm-7">
+                <div class="card-body">
+                    <h5 class="card-title">{{ book.title }}</h5>
+                    <ul class="list-group">
+                        <li class="list-group-item active">Author : {{ book.author }}</li>
+                        <li class="list-group-item list-group-item-info">Price : $ {{ book.price }}</li>
+                    </ul>
+                    <a href="{% url 'buy' book.slug %}" class="btn btn-primary btn-lg"><strong>Buy Now</strong></a>
+                </div>
+            </div>
+        </div>
+     </div>
+    <h3>Reviews</h3>
+
+    {% for item in reviews %}
+        <div class="btn-group mr-2">
+            <button class="btn btn-sm btn-outline-secondary">{{ item.reviewer }}</button>
+            <button class="btn btn-sm btn-outline-secondary">{{ item.review_datetime }}</button>
+        </div>
+        <ul class="list-group">
+            <li class="list-group-item" >{{ item.review }}</li>
+        </ul>
+        <br>
+    {% endfor %}
+    <form id="review_form" method="post" action="{% url 'book_detail' slug %}">
+        {% csrf_token %}
+        {{ form|crispy }}
+    <input type="submit" name="submit" value="add review" />
+    </form>
+{% endblock %}
+<div class="btn-group mr-2">
+    <button class="btn btn-sm btn-outline-secondary">Share</button>
+    <button class="btn btn-sm btn-outline-secondary">Export</button>
+</div>

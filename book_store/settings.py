@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'pages.apps.PagesConfig',
     'books.apps.BooksConfig',
-    
+
     # providers
     'allauth.socialaccount.providers.facebook',
     'allauth.socialaccount.providers.google',
@@ -146,7 +146,7 @@ MEDIA_URL = '/media/'
 
 # server based paths
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'),]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'), ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # Redirects
 LOGIN_REDIRECT_URL = 'home'
@@ -171,3 +171,11 @@ else:
     EMAIL_PORT = 587
     EMAIL_USE_TLS = True
     EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+
+# set up the stripe payments
+if DEBUG:
+    STRIPE_PUBLISHABLE_KEY = "pk_test_51H1qmpKbsj1qv1KZBpeJTRqLg6xbcJMjI7ZuWdcAagLeAYHPW5TmVwoOIHTeKaw7UvS9Zs94pcNG2EYMX2Hc0c3R00ctFUjx12"
+    STRIPE_SECRET_KEY = "sk_test_51H1qmpKbsj1qv1KZaghpiAiBakNLfVFgUNO6WLIanU8HgqkSqYBzBzn5rUyf8ERWH8FUp93Ni8cXP4j7snvO5ZQ000AT8WtITm"
+else:
+    STRIPE_PUBLISHABLE_KEY = "<enter your prod publishable key>"
+    STRIPE_SECRET_KEY = "<enter your prod secret key>"
