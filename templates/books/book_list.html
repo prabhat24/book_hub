@@ -27,7 +27,7 @@
                 <li class="list-group-item list-group-item-light"><strong>$</strong>{{ book.price }}</li>
             </ul>
             <div class="card-body">
-                <a href="#" class="btn btn-primary btn-lg"><strong>Buy Now</strong></a>
+                <a href="{% url 'buy' book.slug %}" class="btn btn-primary btn-lg"><strong>Buy Now</strong></a>
             </div>
         </div>
     </div>
