@@ -78,23 +78,23 @@ class BuyBook(View):
         return HttpResponse('payment successful')
 
 
-def add_book(request):
+class NewBook():
+    def __init__(self, title, author, price, cover, publisher, isbn10, isbn13, published_date, pages,
+                 language):
+        self.title = title
+        self.author = author
+        self.price = price
+        self.cover = cover
+        self.publisher = publisher
+        self.isbn10 = isbn10
+        self.isbn13 = isbn13
+        self.published_date = published_date
+        self.pages = pages
+        self.language = language
+
+
+def gbook_search(request):
     parsed_books = []
-
-    class NewBook():
-        def __init__(self, title, author, price, cover, publisher, isbn10, isbn13, published_date, pages,
-                     language):
-            self.title = title
-            self.author = author
-            self.price = price
-            self.cover = cover
-            self.publisher = publisher
-            self.isbn10 = isbn10
-            self.isbn13 = isbn13
-            self.published_date = published_date
-            self.pages = pages
-            self.language = language
-
     if request.method == "POST":
         search_form = SearchBooksForm(request.POST)
         if search_form.is_valid():
@@ -102,6 +102,7 @@ def add_book(request):
             data = cleaned_form.get('search_field')
             api = GoogleBooksClient()
             book_list = api.list(data).get('items', None)
+
             for book in book_list:
                 volume_info = book.get("volumeInfo")
                 retailPrice = book.get("retailPrice", None)
@@ -109,14 +110,15 @@ def add_book(request):
                 industry_identifiers = volume_info.get("industryIdentifiers", None)
                 isbn_13 = None
                 isbn_10 = None
-                for item in industry_identifiers:
+                subtitle = volume_info.get("subtitle", None)
+                for item in (industry_identifiers if industry_identifiers else list()):
                     isbn_13 = item["identifier"] if item['type'] == "ISBN_13" else isbn_13
                     isbn_10 = item["identifier"] if item['type'] == "ISBN_10" else isbn_10
                 new_book = NewBook(
-                    title=volume_info.get("title") + " " + volume_info.get("subtitle"),
-                    author=volume_info.get("authors")[0],
-                    price=retailPrice.get("amount", None),
-                    cover=image_links('thumbnail', None) if image_links else None,
+                    title=volume_info.get("title") + " " + subtitle if subtitle else volume_info.get("title"),
+                    author=volume_info.get("authors")[0] if volume_info.get("authors") else None,
+                    price=retailPrice.get("amount", None) if retailPrice else None,
+                    cover=image_links.get('thumbnail', None) if image_links else None,
                     publisher=volume_info.get("publisher", None),
                     isbn10=isbn_10,
                     isbn13=isbn_13,
@@ -124,12 +126,11 @@ def add_book(request):
                     pages=volume_info.get('pageCount', None),
                     language=volume_info.get('language', None)
                 )
-                parsed_books = parsed_books.append(new_book)
-        else:
-            search_form = SearchBooksForm()
-
-        context = {
-            'form': search_form,
-            'books': parsed_books
-        }
-        return render(request, 'books/add_books.html', context)
+                parsed_books.append(new_book)
+    else:
+        search_form = SearchBooksForm()
+    context = {
+        'form': search_form,
+        'books': parsed_books
+    }
+    return render(request, 'books/gbook_search.html', context)
