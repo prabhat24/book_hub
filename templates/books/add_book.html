@@ -1,0 +1,81 @@
+{% extends "_base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}
+    add {{ book.title }} to database
+{% endblock %}
+
+{% block style_block %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+{% endblock %}
+
+{% block content %}
+<div class="card" style="width: 500px;">
+    <div class="row no-gutters">
+        <div class="col-sm-5">
+            {% if  book.cover %}
+                <img class="card-img" src="{{ book.cover }}" alt="image not available">
+            {% else %}
+                <img class="card-img" src="{% static 'images/not_avaliable_cover.jpg' %}" alt="image not available">
+            {% endif %}
+        </div>
+    </div>
+</div>
+<div>
+    <form method="post" action="{% url 'add_book' 1 %}" enctype="multipart/form-data">
+        <div class="form-row">
+            {% csrf_token %}
+            <div class="form-group col-md-6">
+              <label for="title">book title</label>
+              {% if book.title %}
+                <input type="text" class="form-control" name="title" id="title" value="{{ book.title }}">
+              {% endif %}
+            </div>
+            <div class="form-group col-md-6">
+                <label for="author">author</label>
+                <input type="text" class="form-control" name="author" id="author" value="{{ book.author }}">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-md-4 mb-3">
+              <label for="price">Price</label>
+              <input type="number" class="form-control" name="price" id="price" value="{{ book.price }}">
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="isbn10">isbn10</label>
+                <input type="text" class="form-control" name="isbn10" id="isbn10" value="{{ book.isbn10 }}">
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="isbn13">isbn13</label>
+                <input type="text" class="form-control" name="isbn13" id="isbn13" value="{{ book.isbn13 }}">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="publisher">language</label>
+                <input type="text" class="form-control" name="language" id="language" value="{{ book.language }}">
+            </div>
+            <div class="form-group col-md-6">
+                <label for="publisher">pages</label>
+                <input type="number" class="form-control" name="pages" id="pages" value="{{ book.pages }}">
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="form-group col-md-6">
+                <label for="publisher">Publisher</label>
+                <input type="text" class="form-control" name="publisher" id="publisher" value="{{ book.publisher }}">
+            </div>
+            <div class="form-group col-md-6">
+                <label for="publisher">cover Image</label>
+                <input type="file" class="form-control" name="cover" id="cover">
+            </div>
+        </div>
+
+        <button class="btn btn-primary" type="submit">Submit form</button>
+    </form>
+</div>
+{% endblock %}

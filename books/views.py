@@ -8,6 +8,10 @@ from django.conf import settings
 import stripe
 from django.http import HttpResponse
 from .scripts import GoogleBooksClient
+from django.conf import settings
+import os
+import requests
+import uuid
 
 
 class BookList(ListView):
@@ -79,8 +83,8 @@ class BuyBook(View):
 
 
 class NewBook():
-    def __init__(self, title, author, price, cover, publisher, isbn10, isbn13, published_date, pages,
-                 language):
+    def __init__(self, title, author, price, publisher, isbn10, isbn13, published_date, pages,
+                 language, cover=None):
         self.title = title
         self.author = author
         self.price = price
@@ -93,9 +97,20 @@ class NewBook():
         self.language = language
 
 
-def gbook_search(request):
-    parsed_books = []
-    if request.method == "POST":
+class GbookSearch(View):
+    context = {
+        'form': None,
+        'books': None
+    }
+
+    def get(self, request, *args, **kwargs):
+        search_form = SearchBooksForm()
+        self.context['form'] = search_form
+        return render(request, 'books/gbook_search.html', self.context)
+
+    def post(self, request, *args, **kwargs):
+        parsed_books = []
+        serialized_parsed_books = []
         search_form = SearchBooksForm(request.POST)
         if search_form.is_valid():
             cleaned_form = search_form.cleaned_data
@@ -127,10 +142,63 @@ def gbook_search(request):
                     language=volume_info.get('language', None)
                 )
                 parsed_books.append(new_book)
-    else:
-        search_form = SearchBooksForm()
-    context = {
-        'form': search_form,
-        'books': parsed_books
-    }
-    return render(request, 'books/gbook_search.html', context)
+                serialized_parsed_books.append(new_book.__dict__)
+
+        self.context['books'] = parsed_books
+        self.context['form'] = search_form
+        request.session['serialized_books'] = serialized_parsed_books
+        return render(request, 'books/gbook_search.html', self.context)
+
+
+def add_book(request, book_id):
+    global required_book
+    if request.method == "GET":
+        required_book = request.session.get('serialized_books')[book_id]
+        for key, values in required_book.items():
+            if not required_book[key]:
+                required_book[key] = ""
+        return render(request, 'books/add_book.html', {'book': required_book})
+
+    elif request.method == "POST":
+        post_values = request.POST
+        book = NewBook(
+            title=post_values.get('title'),
+            author=post_values.get('author'),
+            price=float(post_values.get('price')),
+            publisher=post_values.get('publisher'),
+            isbn10=post_values.get('isbn10'),
+            isbn13=post_values.get('isbn13'),
+            published_date=post_values.get('published_date'),
+            pages=int(post_values.get('pages')),
+            language=post_values.get('language')
+        )
+        cover = None
+        if 'cover' in request.FILES:
+            cover = request.FILES['cover']
+            created_book = Book.objects.create(title=book.title,
+                                               author=book.author,
+                                               price=book.price,
+                                               publisher=book.publisher,
+                                               isbn10=book.isbn10,
+                                               published_date=book.published_date,
+                                               language=book.language,
+                                               cover = cover
+                                               )
+        else:
+            cover_url = required_book.get('cover', None)
+            filename = str(uuid.uuid1()) + ".jpeg"
+            cover_path = os.path.join(os.path.join(settings.MEDIA_ROOT, 'covers'), filename)
+            respose = requests.get(cover_url, allow_redirects=True)
+            with open(cover_path, 'wb+') as f:
+                f.write(respose.content)
+                created_book = Book.objects.create(title=book.title,
+                                                   author=book.author,
+                                                   price=book.price,
+                                                   publisher=book.publisher,
+                                                   isbn10=book.isbn10,
+                                                   published_date=book.published_date,
+                                                   language=book.language,
+                                                   )
+                created_book.cover.save(filename, f)
+                created_book.save()
+        return HttpResponse("books added")

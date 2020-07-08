@@ -6,11 +6,11 @@ from .exceptions import NotValidISBN
 
 
 class Book(models.Model):
-    title = models.CharField(max_length=200)
-    author = models.CharField(max_length=200)
+    title = models.CharField(max_length=500)
+    author = models.CharField(max_length=500)
     price = models.DecimalField(max_digits=6, decimal_places=2)
     cover = models.ImageField(upload_to="covers/", blank=True)
-    slug = models.SlugField(null=True, unique=True)
+    slug = models.SlugField(null=True, unique=True, max_length=500)
     publisher = models.CharField(max_length=200, null=True)
     isbn10 = models.CharField(max_length=10)
     isbn13 = models.CharField(max_length=13)
