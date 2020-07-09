@@ -8,16 +8,28 @@
 {% block title %}
     book list
 {% endblock %}
+{% block search %}
+<form class="form-inline">
+    <div style="display:flex">
+        <div class="form-group">
+            <input class="form-control" type="search" placeholder="Search" name="query" aria-label="Search">
+        </div>
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </div>
+</form>
+{% endblock %}
 {% block content %}
-<div class="row row-cols-1 row-cols-md-5">
+<div class="row row-cols-1 row-cols-md-6">
     {% for book in books %}
-    <div class="col mb-4">
-        <div class="card border-warning text-white bg-dark lg-3" style="max-width: 100%;">
-            {% if book.cover %}
-            <img src="{{ book.cover.url }}" class="card-img-top" alt="image not available">
-            {% else %}
-            <img src="{% static 'images/not_avaliable_cover.jpg' %}" class="card-img-top" alt="...">
-            {% endif %}
+    <div class="col md-8">
+        <div class="card border-warning text-white bg-dark sm-5" style="max-width: 100%;">
+            <div class="col-sm-12">
+                {% if book.cover %}
+                <img src="{{ book.cover.url }}" class="card-img-top" alt="image not available">
+                {% else %}
+                <img src="{% static 'images/not_avaliable_cover.jpg' %}" class="card-img-top" alt="...">
+                {% endif %}
+            </div>
             <div class="card-body">
                 <h10 class="card-title"><a href='{{ book.get_absolute_url }}'> {{ book.title }} </a></h10>
                 <p class="card-text"></p>

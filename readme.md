@@ -46,3 +46,8 @@
 ### chapter 14 orders with stripe
 * payments handling
 
+### chapter 15 search
+* added search on navbar, q filters with title and author
+* improved styling
+
+

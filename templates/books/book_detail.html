@@ -6,29 +6,93 @@
 {% endblock %}
 {% block style_block %}
     <link rel="stylesheet" href="{% static 'css/book_detail.css' %}">
+
+<style>
+    .panel {
+	margin-bottom: 20px;
+	background-color: #fff;
+	border: 1px solid transparent;
+	border-radius: 4px;
+	-webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+	box-shadow: 0 1px 1px rgba(0, 0, 0, .05)
+    }
+    .panel-body {
+        padding: 15px
+    }
+    .panel-primary {
+        border-color: #337ab7
+    }
+    .panel-primary>.panel-heading {
+	color: #fff;
+	background-color: #337ab7;
+	border-color: #337ab7
+    }
+
+    .panel-primary>.panel-heading+.panel-collapse>.panel-body {
+        border-top-color: #337ab7
+    }
+
+    .panel-primary>.panel-heading .badge {
+        color: #337ab7;
+        background-color: #fff
+    }
+
+    .panel-primary>.panel-footer+.panel-collapse>.panel-body {
+        border-bottom-color: #337ab7
+    }
+    .panel-heading {
+        padding: 10px 15px;
+        border-bottom: 1px solid transparent;
+        border-top-left-radius: 3px;
+        border-top-right-radius: 3px
+    }
+    .panel-title {
+        margin-top: 0;
+        margin-bottom: 0;
+        font-size: 16px;
+        color: inherit
+    }
+
+    .panel-title>.small,
+    .panel-title>.small>a,
+    .panel-title>a,
+    .panel-title>small,
+    .panel-title>small>a {
+        color: inherit
+    }
+</style>
 {% endblock %}
 {% block content %}
-     <div class="card" style="width: 500px;">
-        <div class="row no-gutters">
-            <div class="col-sm-5">
-                {% if  book.cover %}
-                <img class="card-img" src="{{ book.cover.url }}" alt="image not available">
-                {% else %}
-                <img class="card-img" src="{% static 'images/not_avaliable_cover.jpg' %}" alt="image not available">
-                {% endif %}
-            </div>
-            <div class="col-sm-7">
-                <div class="card-body">
-                    <h5 class="card-title">{{ book.title }}</h5>
-                    <ul class="list-group">
-                        <li class="list-group-item active">Author : {{ book.author }}</li>
-                        <li class="list-group-item list-group-item-info">Price : $ {{ book.price }}</li>
-                    </ul>
-                    <a href="{% url 'buy' book.slug %}" class="btn btn-primary btn-lg"><strong>Buy Now</strong></a>
-                </div>
-            </div>
+<div style="display:flex">
+    <div class="col-sm-3" >
+        {% if  book.cover %}
+        <img style="width: 260px; height: 377px; object-fit: contain;" src="{{ book.cover.url }}" alt="image not available">
+        {% else %}
+        <img style="width: 260px; height: 377px; object-fit: contain;" src="{% static 'images/not_avaliable_cover.jpg' %}" alt="image not available">
+        {% endif %}
+    </div>
+    <div class="col-sm-4 card">
+        <div class="card-body">
+            <h5 class="card-title">{{ book.title }}</h5>
+            <ul class="list-group">
+                <li class="list-group-item active">Author: {{ book.author }}</li>
+                <li class="list-group-item list-group-item-info">Price: $ {{ book.price }}</li>
+                <li class="list-group-item list-group-item-dark">Publisher: {{ book.publisher }}</li>
+                <li class="list-group-item list-group-item-warning">ISBN 10: {{ book.isbn10 }}</li>
+                <li class="list-group-item list-group-item-warning">ISBN 13: {{ book.isbn13 }}</li>
+                <li class="list-group-item list-group-item-light">published date: {{ book.published_date }}</li>
+                <li class="list-group-item list-group-item-light">pages: {{ book.pages }}</li>
+                <li class="list-group-item list-group-item-light">language: {{ book.language }}</li>
+            </ul>
+            <a href="{% url 'buy' book.slug %}" class="btn btn-primary btn-lg"><strong>Buy Now</strong></a>
         </div>
      </div>
+    <div class="panel panel-primary col-sm-4">
+      <div class="panel-heading">descriptrion</div>
+      <div class="panel-body">{{ book.description }}</div>
+    </div>
+
+</div>
     <h3>Reviews</h3>
 
     {% for item in reviews %}
@@ -51,3 +115,4 @@
     <button class="btn btn-sm btn-outline-secondary">Share</button>
     <button class="btn btn-sm btn-outline-secondary">Export</button>
 </div>
+

@@ -12,12 +12,25 @@ from django.conf import settings
 import os
 import requests
 import uuid
+from django.db.models import Q
 
 
-class BookList(ListView):
+class BookList(View):
     model = Book
     template_name = "books/book_list.html"
     context_object_name = "books"
+
+    def get(self, request, *args, **kwargs):
+        context = {
+            self.context_object_name: self.get_queryset(request)
+        }
+        return render(request, self.template_name, context)
+
+    def get_queryset(self, request):
+        if 'query' in request.GET:
+            query = request.GET['query']
+            return self.model.objects.filter(Q(title__icontains=query) | Q(author__icontains=query))
+        return self.model.objects.all()
 
 
 class BookDetail(View):
@@ -84,7 +97,7 @@ class BuyBook(View):
 
 class NewBook():
     def __init__(self, title, author, price, publisher, isbn10, isbn13, published_date, pages,
-                 language, cover=None):
+                 language, cover=None, description=None):
         self.title = title
         self.author = author
         self.price = price
@@ -95,6 +108,7 @@ class NewBook():
         self.published_date = published_date
         self.pages = pages
         self.language = language
+        self.description = description
 
 
 class GbookSearch(View):
@@ -139,7 +153,8 @@ class GbookSearch(View):
                     isbn13=isbn_13,
                     published_date=volume_info.get('publishedDate', None),
                     pages=volume_info.get('pageCount', None),
-                    language=volume_info.get('language', None)
+                    language=volume_info.get('language', None),
+                    description=volume_info.get('description', None)
                 )
                 parsed_books.append(new_book)
                 serialized_parsed_books.append(new_book.__dict__)
@@ -170,7 +185,8 @@ def add_book(request, book_id):
             isbn13=post_values.get('isbn13'),
             published_date=post_values.get('published_date'),
             pages=int(post_values.get('pages')),
-            language=post_values.get('language')
+            language=post_values.get('language'),
+            description = post_values.get('description', None)
         )
         cover = None
         if 'cover' in request.FILES:
@@ -182,7 +198,8 @@ def add_book(request, book_id):
                                                isbn10=book.isbn10,
                                                published_date=book.published_date,
                                                language=book.language,
-                                               cover = cover
+                                               cover=cover,
+                                               description= book.description
                                                )
         else:
             cover_url = required_book.get('cover', None)
@@ -198,6 +215,7 @@ def add_book(request, book_id):
                                                    isbn10=book.isbn10,
                                                    published_date=book.published_date,
                                                    language=book.language,
+                                                   description=book.description
                                                    )
                 created_book.cover.save(filename, f)
                 created_book.save()

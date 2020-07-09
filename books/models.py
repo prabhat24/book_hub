@@ -17,6 +17,7 @@ class Book(models.Model):
     published_date = models.DateField(null=True, blank=True)
     pages = models.ImageField(null=True, blank=True)
     language = models.CharField(max_length=10)
+    description = models.TextField(max_length=1000)
 
     def __str__(self):
         return f"title:{self.title}, author:{self.author}"
