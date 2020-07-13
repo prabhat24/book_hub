@@ -1,18 +1,17 @@
-from django.views.generic import ListView, DetailView
-from .models import Book, Review
-from django.views import View
-from .forms import ReviewCreationForm, SearchBooksForm
-from django.shortcuts import render, redirect
-from django.urls import reverse
-from django.conf import settings
-import stripe
-from django.http import HttpResponse
-from .scripts import GoogleBooksClient
-from django.conf import settings
 import os
-import requests
 import uuid
+
+import requests
+import stripe
+from django.conf import settings
 from django.db.models import Q
+from django.http import HttpResponse
+from django.shortcuts import render
+from django.views import View
+
+from .forms import ReviewCreationForm, SearchBooksForm
+from .models import Book, Review
+from .scripts import GoogleBooksClient
 
 
 class BookList(View):
@@ -38,13 +37,13 @@ class BookDetail(View):
     template_name = "books/book_detail.html"
     form_class = ReviewCreationForm
     context_data = {}
-
     def get(self, request, *args, **kwargs):
         form = self.form_class()
         book = self.model.objects.filter(slug=self.kwargs['slug']).first()
         self.context_data['book'] = book
         self.context_data['form'] = form
         self.context_data['reviews'] = book.reviews.all()
+        self.context_data['all_reviewers'] = [review.reviewer.username for review in book.reviews.all()]
         self.context_data['slug'] = self.kwargs['slug']
         return render(request, self.template_name, self.context_data)
 
@@ -52,6 +51,7 @@ class BookDetail(View):
         form = self.form_class(request.POST)
         self.context_data['slug'] = self.kwargs['slug']
         book = self.model.objects.filter(slug=self.kwargs['slug']).first()
+        self.context_data['all_reviewers'] = [review.reviewer.username for review in book.reviews.all()]
         self.context_data['book'] = book
         if form.is_valid():
             review = form.save(commit=False)
@@ -186,7 +186,7 @@ def add_book(request, book_id):
             published_date=post_values.get('published_date'),
             pages=int(post_values.get('pages')),
             language=post_values.get('language'),
-            description = post_values.get('description', None)
+            description=post_values.get('description', None)
         )
         cover = None
         if 'cover' in request.FILES:
@@ -199,7 +199,7 @@ def add_book(request, book_id):
                                                published_date=book.published_date,
                                                language=book.language,
                                                cover=cover,
-                                               description= book.description
+                                               description=book.description
                                                )
         else:
             cover_url = required_book.get('cover', None)
@@ -220,3 +220,17 @@ def add_book(request, book_id):
                 created_book.cover.save(filename, f)
                 created_book.save()
         return HttpResponse("books added")
+
+def like_review(request):
+    review_id = None
+    if request.method == 'GET':
+        review_id = request.GET['review_id']
+    likes = 0
+    if review_id:
+        review = Review.objects.get(id=int(review_id))
+        if review:
+            likes = review.likes + 1
+            review.likes =  likes
+            review.save()
+    return HttpResponse(likes)
+

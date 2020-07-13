@@ -1,7 +1,8 @@
+from django.contrib.auth import get_user_model
 from django.db import models
 from django.template.defaultfilters import slugify
 from django.urls import reverse
-from django.contrib.auth import get_user_model
+
 from .exceptions import NotValidISBN
 
 
@@ -39,8 +40,16 @@ class Book(models.Model):
 class Review(models.Model):
     review = models.CharField(max_length=1000)
     book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='reviews')
-    reviewer = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    reviewer = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='user_reviews')
     review_datetime = models.DateTimeField(auto_now=True)
+    likes = models.IntegerField(default=0)
+
+    # def save(self, *args, **kwargs):
+    #     for review in self.reviewer.user_reviews.all():
+    #         if review.book == self.book:
+    #             raise ReviewsIntegrityError(
+    #                 f'user {self.reviewer.username} cannot create more reviews for book {self.book.title}')
+    #     super(Review, self).save()
 
     def __str__(self):
         return f'review: {self.review}, books: {self.book.title}, reviewer: {self.reviewer.username}'

@@ -1,68 +1,16 @@
 {% extends "_base.html" %}
 {% load crispy_forms_tags %}
 {% load static %}
+
 {% block title %}
     {{ book.title }}
 {% endblock %}
-{% block style_block %}
-    <link rel="stylesheet" href="{% static 'css/book_detail.css' %}">
 
-<style>
-    .panel {
-	margin-bottom: 20px;
-	background-color: #fff;
-	border: 1px solid transparent;
-	border-radius: 4px;
-	-webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
-	box-shadow: 0 1px 1px rgba(0, 0, 0, .05)
-    }
-    .panel-body {
-        padding: 15px
-    }
-    .panel-primary {
-        border-color: #337ab7
-    }
-    .panel-primary>.panel-heading {
-	color: #fff;
-	background-color: #337ab7;
-	border-color: #337ab7
-    }
-
-    .panel-primary>.panel-heading+.panel-collapse>.panel-body {
-        border-top-color: #337ab7
-    }
-
-    .panel-primary>.panel-heading .badge {
-        color: #337ab7;
-        background-color: #fff
-    }
-
-    .panel-primary>.panel-footer+.panel-collapse>.panel-body {
-        border-bottom-color: #337ab7
-    }
-    .panel-heading {
-        padding: 10px 15px;
-        border-bottom: 1px solid transparent;
-        border-top-left-radius: 3px;
-        border-top-right-radius: 3px
-    }
-    .panel-title {
-        margin-top: 0;
-        margin-bottom: 0;
-        font-size: 16px;
-        color: inherit
-    }
-
-    .panel-title>.small,
-    .panel-title>.small>a,
-    .panel-title>a,
-    .panel-title>small,
-    .panel-title>small>a {
-        color: inherit
-    }
-</style>
-{% endblock %}
 {% block content %}
+<link rel="stylesheet" href="{% static 'css/book_detail.css' %}">
+<link rel="stylesheet" href="{% static 'font_awesome/css/font-awesome.min.css' %}">
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="{% static 'js/book_detail.js' %}"></script>
 <div style="display:flex">
     <div class="col-sm-3" >
         {% if  book.cover %}
@@ -94,25 +42,55 @@
 
 </div>
     <h3>Reviews</h3>
-
     {% for item in reviews %}
-        <div class="btn-group mr-2">
-            <button class="btn btn-sm btn-outline-secondary">{{ item.reviewer }}</button>
-            <button class="btn btn-sm btn-outline-secondary">{{ item.review_datetime }}</button>
-        </div>
-        <ul class="list-group">
-            <li class="list-group-item" >{{ item.review }}</li>
-        </ul>
-        <br>
-    {% endfor %}
-    <form id="review_form" method="post" action="{% url 'book_detail' slug %}">
-        {% csrf_token %}
-        {{ form|crispy }}
-    <input type="submit" name="submit" value="add review" />
-    </form>
-{% endblock %}
-<div class="btn-group mr-2">
-    <button class="btn btn-sm btn-outline-secondary">Share</button>
-    <button class="btn btn-sm btn-outline-secondary">Export</button>
-</div>
+        <div class="container-fluid">
 
+            <div class="btn-group mr-2">
+                <button class="btn btn-sm btn-outline-secondary">{{ item.reviewer }}</button>
+                <button class="btn btn-sm btn-outline-secondary">{{ item.review_datetime }}</button>
+                <button class="btn btn-sm btn-outline-secondary">
+                    <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                    <strong id = "{{ item.id }}_value"> {{ item.likes }} </strong>
+                </button>
+            </div>
+            <div class="row">
+                <div class="col-md-7">
+                <ul class="list-group">
+                    <li class="list-group-item" >{{ item.review }}</li>
+                </ul>
+                </div>
+                <div class="col-md-1">
+                    <a href="#" class="alike" id="{{ item.id }}_link" data-link-id="{{ item.id }}"> <i class="fa fa-thumbs-up" aria-hidden="true"></i> </a>
+                </div>
+            </div>
+        </div>
+        <br>
+        <script>
+            $(document).ready(function(){
+                $('#{{ item.id }}_link').click(function(){
+                    var review_id;
+                    review_id = $(this).attr("data-link-id");
+                    $.get('{% url "like_review" %}', {review_id: review_id}, function(data){
+                        $('#{{ item.id }}_value').html(data);
+                        $('#{{ item.id }}_link').hide();
+                    });
+                });
+            });
+        </script>
+    {% endfor %}
+<div class="container" id="review_form_div">
+    {% if not user.username in all_reviewers %}
+        <form id="review_form" method="post" action="{% url 'book_detail' slug %}">
+            <div class="row">
+            <div class="col-md-6">
+            {% csrf_token %}
+            {{ form|crispy }}
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-primary my-2 my-sm-0" id="submit-btn" type="submit" name="submit" value="add review">Add Review</button>
+            </div>
+            </div>
+        </form>
+    {% endif %}
+</div>
+{% endblock %}
