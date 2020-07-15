@@ -9,25 +9,57 @@
     book list
 {% endblock %}
 {% block search %}
-<form class="form-inline">
-    <div style="display:flex">
-        <div class="form-group">
-            <input class="form-control" type="search" placeholder="Search" name="query" aria-label="Search">
+    <form class="form-inline">
+        <div style="display:flex">
+            <div class="form-group">
+                <input class="form-control" type="search" placeholder="Search" name="query" aria-label="Search">
+            </div>
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
         </div>
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-    </div>
-</form>
+    </form>
 {% endblock %}
+
+{% block icon_block %}
+    <div id="cart-icon" class="form-inline my-2 my-lg-0">
+        <a href="{% url 'cart' %}" class="fa fa-shopping-cart" aria-hidden="true">
+        </a>
+        {% if total_card_items != 0 %}
+            <p id="cart-total">{{ total_card_items }}</p>
+        {% endif %}
+    </div>
+
+{% endblock icon_block %}
+
 {% block content %}
+<script>
+    var user = '{{ request.user }}';
+    function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+
+</script>
 <div class="row row-cols-1 row-cols-md-6">
     {% for book in books %}
-    <div class="col md-8">
-        <div class="card border-warning text-white bg-dark sm-5" style="max-width: 100%;">
+    <div class="col md-8" style="padding-bottom: 2%;">
+        <div class="card shadow-sm bg-dark sm-5 rounded" style="max-width: 100%;">
             <div class="col-sm-12">
                 {% if book.cover %}
-                <img src="{{ book.cover.url }}" class="card-img-top" alt="image not available">
+                <img  src="{{ book.thumbnail }}" class="thumbnail card-img-top" alt="image not available">
                 {% else %}
-                <img src="{% static 'images/not_avaliable_cover.jpg' %}" class="card-img-top" alt="...">
+                <img src="{% static 'images/not_avaliable_cover.jpg' %}" class="thumbnail card-img-top" alt="...">
                 {% endif %}
             </div>
             <div class="card-body">
@@ -36,13 +68,19 @@
             </div>
             <ul class="list-group list-group-flush">
                 <li class="list-group-item list-group-item-dark">author: {{ book.author }}</li>
-                <li class="list-group-item list-group-item-light"><strong>$</strong>{{ book.price }}</li>
+                <li class="list-group-item list-group-item-light"><strong>$ </strong>{{ book.price }}</li>
             </ul>
             <div class="card-body">
-                <a href="{% url 'buy' book.slug %}" class="btn btn-primary btn-lg"><strong>Buy Now</strong></a>
+                <a id="add-to-cart" href="#" data-book="{{ book.id }}" data-action="add_book" class="update-cart btn button-secondary ">
+                    <i class="fa fa-cart-plus" aria-hidden="true"></i>
+                </a>
+                <a id="buy-now" href="{% url 'buy' book.slug %}" class="btn button-secondary">
+                    <i class="fa fa-credit-card-alt" aria-hidden="true"> buy now</i>
+                </a>
             </div>
         </div>
     </div>
     {% endfor %}
+    <script type="text/javascript" src="{% static 'js/_base.js' %}"></script>
 </div>
 {% endblock %}

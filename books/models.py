@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.template.defaultfilters import slugify
 from django.urls import reverse
-
+import uuid
 from .exceptions import NotValidISBN
 
 
@@ -36,6 +36,12 @@ class Book(models.Model):
     def get_absolute_url(self):
         return reverse('book_detail', kwargs={'slug': self.slug})
 
+    @property
+    def thumbnail(self):
+        if self.cover:
+            return self.cover.url
+        else:
+            return ""
 
 class Review(models.Model):
     review = models.CharField(max_length=1000)
@@ -53,3 +59,57 @@ class Review(models.Model):
 
     def __str__(self):
         return f'review: {self.review}, books: {self.book.title}, reviewer: {self.reviewer.username}'
+
+
+class ShippingDetail(models.Model):
+    customer = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, blank=True,
+                                 related_name="costomer_address", null=True)
+    address = models.CharField(max_length=1000)
+    zip_code = models.CharField(max_length=5)
+    city = models.CharField(max_length=20)
+    state = models.CharField(max_length=30)
+    country = models.CharField(max_length=20)
+
+    def __str__(self):
+        return f"Shipping_Details_id : {self.id}, customer: {self.customer}, address: {self.address}"
+
+
+class Order(models.Model):
+    transaction_id = models.UUIDField(default=uuid.uuid4, editable=False)
+    customer = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, blank=True, related_name="orders",
+                                 null=True)
+    order_date_time = models.DateTimeField(auto_now=True)
+    completed = models.BooleanField(default=False, blank=True)
+    shipping_detail = models.ForeignKey(ShippingDetail,
+                                         on_delete=models.SET_NULL,
+                                         null=True,
+                                         related_name='assigned_orders',
+                                         blank=True)
+
+    @property
+    def total_order_cost(self):
+        order_items = self.order_items.all()
+        total_sum = sum([item.total_item_cost for item in order_items])
+        return total_sum
+
+    @property
+    def total_cart_items(self):
+        order_items = self.order_items.all()
+        total_items = sum([item.quantity for item in order_items])
+        return total_items
+
+    def __str__(self):
+        return f"id = {self.id}, customer = {self.customer}"
+
+
+class OrderItem(models.Model):
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='order_item')
+    quantity = models.IntegerField(default=1, null=True, blank=True)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order_items')
+
+    @property
+    def total_item_cost(self):
+        return float(self.quantity) * float(self.book.price)
+
+    def __str__(self):
+        return f"order_id:{self.id}, book:{self.book.title}, order:{self.order.id}"

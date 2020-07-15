@@ -1,6 +1,6 @@
 import os
 import uuid
-
+import json
 import requests
 import stripe
 from django.conf import settings
@@ -10,8 +10,9 @@ from django.shortcuts import render
 from django.views import View
 
 from .forms import ReviewCreationForm, SearchBooksForm
-from .models import Book, Review
+from .models import *
 from .scripts import GoogleBooksClient
+from django.http import JsonResponse
 
 
 class BookList(View):
@@ -20,8 +21,10 @@ class BookList(View):
     context_object_name = "books"
 
     def get(self, request, *args, **kwargs):
+        order, created = Order.objects.get_or_create(customer=request.user, completed=False)
         context = {
-            self.context_object_name: self.get_queryset(request)
+            self.context_object_name: self.get_queryset(request),
+            'total_card_items': order.total_cart_items
         }
         return render(request, self.template_name, context)
 
@@ -37,14 +40,17 @@ class BookDetail(View):
     template_name = "books/book_detail.html"
     form_class = ReviewCreationForm
     context_data = {}
+
     def get(self, request, *args, **kwargs):
         form = self.form_class()
         book = self.model.objects.filter(slug=self.kwargs['slug']).first()
+        order, created = Order.objects.get_or_create(customer=request.user, completed=False)
         self.context_data['book'] = book
         self.context_data['form'] = form
         self.context_data['reviews'] = book.reviews.all()
         self.context_data['all_reviewers'] = [review.reviewer.username for review in book.reviews.all()]
         self.context_data['slug'] = self.kwargs['slug']
+        self.context_data['total_card_items'] = order.total_cart_items
         return render(request, self.template_name, self.context_data)
 
     def post(self, request, *args, **kwargs):
@@ -221,6 +227,7 @@ def add_book(request, book_id):
                 created_book.save()
         return HttpResponse("books added")
 
+
 def like_review(request):
     review_id = None
     if request.method == 'GET':
@@ -230,7 +237,36 @@ def like_review(request):
         review = Review.objects.get(id=int(review_id))
         if review:
             likes = review.likes + 1
-            review.likes =  likes
+            review.likes = likes
             review.save()
     return HttpResponse(likes)
 
+
+def cart(request):
+    order, created = Order.objects.get_or_create(customer=request.user, completed=False)
+    order_items = order.order_items.all()
+
+    context = {'order': order,
+               'order_items': order_items}
+    return render(request, 'books/cart.html', context)
+
+
+def checkout(request):
+    context = {}
+    return render(request, 'books/cart.html', context)
+
+
+def update_cart(request):
+    post_data = json.loads(request.body)
+    book_id = post_data.get('productId', None)
+    action = post_data.get('action', None)
+    if action == 'add_book':
+        order, created = Order.objects.get_or_create(customer=request.user, completed=False)
+        order_item, created_item = order.order_items.get_or_create(book_id=book_id)
+        if created_item:
+            order_item.quantity = 1
+        else:
+            order_item.quantity += 1
+        order_item.save()
+        order.save()
+    return JsonResponse("successfilly added item", safe=False)

@@ -1,0 +1,54 @@
+{% extends '_base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/cart.css' %}">
+<div class='container-fluid'>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="box-element">
+                <table class="table">
+                    <tr>
+                        <th>Items</th>
+                        <th>Total</th>
+                        <th>
+                            <a style="float:right; width:22%;" class="btn btn-success"
+                               href="{% url 'checkout' %}">Checkout</a>
+                        </th>
+                    </tr>
+                    <tr>
+                        <td>{{ order.total_cart_items }}</td>
+                        <td>$ {{ order.total_order_cost }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="col-lg-12 ">
+            <div class="box-element">
+                <div class="cart-row">
+                    <div style="flex:2"></div>
+                    <div style="flex:2"><strong>Item</strong></div>
+                    <div style="flex:1"><strong>Price</strong></div>
+                    <div style="flex:1"><strong>Quantity</strong></div>
+                    <div style="flex:1"><strong>Total</strong></div>
+                </div>
+                {% for item in order_items %}
+                <div class="cart-row">
+                    <div style="flex:2"><img class="row-image" src="{{ item.book.thumbnail }}">
+                    </div>
+                    <div style="flex:2"><p>{{ item.book.title }}</p></div>
+                    <div style="flex:1"><p>$ {{ item.book.price }}</p></div>
+                    <div style="flex:1">
+                        <p class="quantity">{{ item.quantity }}</p>
+                        <div class="quantity">
+                                <img class="chg-quantity" src="{% static  'images/arrow-up.png' %}">
+                            <img class="chg-quantity" src="{% static  'images/arrow-down.png' %}">
+                        </div>
+                    </div>
+                    <div style="flex:1"><p>$ {{ item.total_item_cost }}</p></div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -6,15 +6,25 @@
     {{ book.title }}
 {% endblock %}
 
+{% block icon_block %}
+    <link rel="stylesheet" href="{% static 'css/book_detail.css' %}">
+    <div id="cart-icon" class="form-inline my-2 my-lg-0">
+        <a href="% url 'cart' %" class="fa fa-shopping-cart" aria-hidden="true">
+        </a>
+        {% if total_card_items != 0 %}
+            <p id="cart-total">{{ total_card_items }}</p>
+        {% endif %}
+
+    </div>
+{% endblock icon_block %}
+
 {% block content %}
-<link rel="stylesheet" href="{% static 'css/book_detail.css' %}">
-<link rel="stylesheet" href="{% static 'font_awesome/css/font-awesome.min.css' %}">
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="{% static 'js/book_detail.js' %}"></script>
 <div style="display:flex">
     <div class="col-sm-3" >
         {% if  book.cover %}
-        <img style="width: 260px; height: 377px; object-fit: contain;" src="{{ book.cover.url }}" alt="image not available">
+        <img style="width: 260px; height: 377px; object-fit: contain;" src="{{ book.thumbnail }}" alt="image not available">
         {% else %}
         <img style="width: 260px; height: 377px; object-fit: contain;" src="{% static 'images/not_avaliable_cover.jpg' %}" alt="image not available">
         {% endif %}
@@ -93,4 +103,4 @@
         </form>
     {% endif %}
 </div>
-{% endblock %}
+{% endblock content %}

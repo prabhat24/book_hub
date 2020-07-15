@@ -50,4 +50,6 @@
 * added search on navbar, q filters with title and author
 * improved styling
 
-
+### adding cart functionality
+* cart added
+* calculation of total cost, total items in the cart.

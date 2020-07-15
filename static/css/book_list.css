@@ -3,19 +3,65 @@
 }
 .card {
     border-radius: 1.25rem;
+    box-shadow:hsl(0, 0%, 80%) 0 0 16px;
+	background-color: #fff;
+}
+#add-to-cart {
+    float: left;
+    width: 26%;
+    font-size: 186%;
+    padding: 1%;
 }
 .btn-lg {
     font-size: 0.8rem;
     border-radius: 2.3rem;
+
 }
+#cart-total {
+	display: block;
+	text-align: center;
+	color:#fff;
+	background-color: red;
+	width: 20px;
+	height: 25px;
+	border-radius: 50%;
+	font-size: 14px;
+}
+.btn{
+    width: auto;
+}
+.button-secondary{
+    width: auto;
+}
+#add-to-cart {
+    float: left;
+    width: 26%;
+    font-size: 186%;
+    padding: 1%;
+}
+
+#buy-now {
+    padding-top: 7%;
+    font-size: 116%;
+}
+
+.box-element {
+box-shadow:hsl(0, 0%, 50%) 0 0 2px;
+background-color: #fff;
+border-radius: 4px;
+padding: 10px;
+}
+
 .card-body {
-    -ms-flex: 1 1 auto;
-    flex: 1 1 auto;
-    min-height: 1px;
-    padding : 1px;
-    text-align: center;
-    font-color:red;
+-ms-flex: 1 1 auto;
+flex: 1 1 auto;
+min-height: 1px;
+padding : 1px;
+text-align: center;
+padding-left: 3%;
+padding-right: 3%;
 }
+
 a:link { COLOR: #C8CC3B ; TEXT-DECORATION: none; font-weight: normal }
 a:visited { COLOR: #C8CC3B ; TEXT-DECORATION: none; font-weight: normal }
 a:active { COLOR: #C8CC3B ; TEXT-DECORATION: none }

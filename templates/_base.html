@@ -12,7 +12,10 @@
     <!-- Bootstrap core CSS -->
     <link href="http://v4-alpha.getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom styles for this template -->
+
     <link href="http://v4-alpha.getbootstrap.com/examples/dashboard/dashboard.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'font_awesome/css/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/_base.css' %}">
     <style>
         body {
           font-family: Arial, Helvetica, sans-serif;
@@ -123,6 +126,8 @@
             </li>
             {% endif %}
         </ul>
+        {% block icon_block %}
+        {% endblock %}
         {% block search %}
         {% endblock %}
     </div>

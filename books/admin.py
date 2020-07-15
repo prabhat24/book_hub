@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import Review
-from books.models import Book
+from books.models import Book, Order, OrderItem, ShippingDetail
 
 
 class ReviewInline(admin.TabularInline):
@@ -14,3 +14,6 @@ class BookAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Book, BookAdmin)
+admin.site.register(Order)
+admin.site.register(OrderItem)
+admin.site.register(ShippingDetail)
