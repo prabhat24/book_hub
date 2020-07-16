@@ -260,13 +260,18 @@ def update_cart(request):
     post_data = json.loads(request.body)
     book_id = post_data.get('productId', None)
     action = post_data.get('action', None)
+    order, created = Order.objects.get_or_create(customer=request.user, completed=False)
+    order_item, created_item = order.order_items.get_or_create(book_id=book_id)
     if action == 'add_book':
-        order, created = Order.objects.get_or_create(customer=request.user, completed=False)
-        order_item, created_item = order.order_items.get_or_create(book_id=book_id)
         if created_item:
             order_item.quantity = 1
         else:
             order_item.quantity += 1
         order_item.save()
-        order.save()
+    elif action == 'remove_book':
+        if order_item.quantity > 0:
+            order_item.quantity -= 1
+            order_item.save()
+        if order_item.quantity == 0:
+            order_item.delete()
     return JsonResponse("successfilly added item", safe=False)

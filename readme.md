@@ -53,3 +53,4 @@
 ### adding cart functionality
 * cart added
 * calculation of total cost, total items in the cart.
+* remove from cart

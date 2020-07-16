@@ -85,6 +85,26 @@
     {% endblock %}
 </head>
 <body>
+<script>
+    var user = '{{ request.user }}';
+    function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+
+</script>
 <nav class="navbar navbar-toggleable-md navbar-inverse fixed-top bg-inverse">
     <button class="navbar-toggler navbar-toggler-right hidden-lg-up"
             type="button"
@@ -155,6 +175,7 @@
         integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
         crossorigin="anonymous"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+<script type="text/javascript" src="{% static 'js/_base.js' %}"></script>
 <footer class="page-footer font-small blue">
     <div class="footer-copyright text-center py-3">© Anzo Rage 2020 Copyright:
         <a href="https://github.com/prabhat24"> </a>
