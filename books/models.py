@@ -62,13 +62,15 @@ class Review(models.Model):
 
 
 class ShippingDetail(models.Model):
+    name = models.CharField(max_length=100)
+    mob_no = models.ImageField(max_length=10)
     customer = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, blank=True,
-                                 related_name="costomer_address", null=True)
+                                 related_name="shipping_details", null=True)
     address = models.CharField(max_length=1000)
-    zip_code = models.CharField(max_length=5)
+    zip_code = models.CharField(max_length=6)
     city = models.CharField(max_length=20)
     state = models.CharField(max_length=30)
-    country = models.CharField(max_length=20)
+    country = models.CharField(max_length=20, default='India')
 
     def __str__(self):
         return f"Shipping_Details_id : {self.id}, customer: {self.customer}, address: {self.address}"

@@ -1,0 +1,73 @@
+{% extends '_base.html' %}
+{% load static %}
+{% block content %}
+<script>
+
+</script>
+<link rel="stylesheet" href="{% static 'css/cart.css' %}">
+<div class="row">
+    <div class="col-lg-6">
+        <div class="box-element" id="form-wrapper">
+            <form id="form" method="POST" action=".">
+                {% csrf_token %}
+                <div id="user-info">
+                    <div class="form-field">
+                        <input required class="form-control" type="text" name="name" placeholder="Name..">
+                    </div>
+                    <div class="form-field">
+                        <input class="form-control" type="tel" id="phone" name="mob_no" placeholder="mob-no" pattern="[0-9]{3}[0-9]{3}[0-9]{4}" required>
+                    </div>
+                </div>
+
+                <div id="shipping-info">
+                    <hr>
+                    <p>Shipping Information:</p>
+                    <hr>
+                    <div class="form-field">
+                        <input class="form-control" type="text" name="address" placeholder="Address..">
+                    </div>
+                    <div class="form-field">
+                        <input class="form-control" type="text" name="city" placeholder="City..">
+                    </div>
+                    <div class="form-field">
+                        <input class="form-control" type="text" name="state" placeholder="State..">
+                    </div>
+                    <div class="form-field">
+                        <input class="form-control" type="text" name="zip_code" placeholder="Zip code..">
+                    </div>
+                    <div class="form-field">
+                        <input class="form-control" type="text" name="country" placeholder="country..">
+                    </div>
+                </div>
+                <hr>
+                <input id="add-address" class="btn btn-success btn-block" type="submit" value="Add Shipping Address">
+            </form>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="form-group">
+            <div class="box-element">
+                <h5>select shipping address</h5>
+                <hr>
+                {% for i in shipping_details %}
+                <div class="form-check">
+                    <input class="form-check-input" data-addressid="{{i.id}}" type="radio" name="gridRadios"
+                           id="{{i.id}}"
+                           style="margin-left: 2px; width:auto">
+                    <label class="form-check-label" for="{{i.id}}">
+                        {{ i.address }},
+                        {{ i.zip_code }},
+                        {{ i.state }},
+                        {{ i.city }},
+                        {{ i.country }}
+                    </label>
+                </div>
+                <hr>
+                {% endfor %}
+                <a id="proceed-btn" data-action="link_address" class="btn btn-success btn-block">Proceed</a>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="{% static 'js/shipping_details.js' %}"></script>
+{% endblock content %}

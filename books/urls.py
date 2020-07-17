@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import BookDetail, BookList, BuyBook, add_book, like_review, cart, checkout, update_cart
+from .views import *
 
 urlpatterns = [
     path("", BookList.as_view(), name='books'),
@@ -8,6 +8,8 @@ urlpatterns = [
     path("buy/<slug:book>", BuyBook.as_view(), name='buy'),
     path("like_review/", like_review, name='like_review'),
     path("cart/", cart, name="cart"),
+    path("ship/", ship, name='ship'),
     path("checkout/", checkout, name='checkout'),
     path("update_cart/", update_cart ,name='update_cart'),
+    path("link_address/", link_address, name='link_address'),
 ]

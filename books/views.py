@@ -246,14 +246,39 @@ def cart(request):
     order, created = Order.objects.get_or_create(customer=request.user, completed=False)
     order_items = order.order_items.all()
 
-    context = {'order': order,
-               'order_items': order_items}
+    context = {
+        'order': order,
+        'order_items': order_items
+    }
     return render(request, 'books/cart.html', context)
 
 
-def checkout(request):
-    context = {}
-    return render(request, 'books/cart.html', context)
+def ship(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        mob_no = request.POST.get('mob_no')
+        address = request.POST.get('address')
+        city = request.POST.get('city')
+        state = request.POST.get('state')
+        zip_code = request.POST.get('zip_code')
+        country = request.POST.get('country')
+        ShippingDetail.objects.create(
+            name=name,
+            mob_no=mob_no,
+            address=address,
+            city=city,
+            zip_code=zip_code,
+            state=state,
+            country=country,
+            customer=request.user
+        )
+    shipping_details = request.user.shipping_details.all()
+    order = Order.objects.get(customer=request.user, completed=False)
+    context = {
+        'shipping_details': shipping_details,
+        'order': order,
+    }
+    return render(request, 'books/shipping_details.html', context)
 
 
 def update_cart(request):
@@ -275,3 +300,24 @@ def update_cart(request):
         if order_item.quantity == 0:
             order_item.delete()
     return JsonResponse("successfilly added item", safe=False)
+
+
+def checkout(request):
+    order = Order.objects.get(customer=request.user, completed=False)
+    order_items = order.order_items.all()
+    context = {
+        'order': order,
+        'order_items': order_items
+    }
+    return render(request, 'books/checkout.html', context)
+
+
+def link_address(request):
+    post_data = json.loads(request.body)
+    shipping_id = post_data.get('shipping_id')
+    action = post_data.get('action')
+    order = Order.objects.get_or_create(customer=request.user, completed=False)
+    if action == 'link_address':
+        order.shipping_detail = ShippingDetail.objects.get(id=shipping_id)
+        return JsonResponse("order got updated with the address", safe=False)
+    return JsonResponse("action not defined", safe=False)
