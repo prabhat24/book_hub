@@ -72,18 +72,16 @@ class BookDetail(View):
 
 
 class BuyBook(View):
+
     def get(self, request, *args, **kwargs):
-        book = Book.objects.filter(slug=self.kwargs['book']).first()
-        context = {
-            'book': book
-        }
-        return render(request, 'books/charge.html', context)
+        order = Order.objects.get(customer=request.user, completed=False)
+        return render(request, 'books/charge.html')
 
     def post(self, request, *args, **kwargs):
         stripe.api_key = settings.STRIPE_SECRET_KEY
         publish_key = settings.STRIPE_PUBLISHABLE_KEY
-        book = Book.objects.filter(slug=self.kwargs['book']).first()
-        amount = int(book.price * 100)
+        order = Order.objects.get(customer=request.user, completed=False)
+        amount = int(order.total_order_cost * 100)
         print(f'data:{request.POST}')
         stripe_token = request.POST['stripeToken']
 
@@ -314,10 +312,11 @@ def checkout(request):
 
 def link_address(request):
     post_data = json.loads(request.body)
-    shipping_id = post_data.get('shipping_id')
+    shipping_id = post_data.get('shippingId')
     action = post_data.get('action')
-    order = Order.objects.get_or_create(customer=request.user, completed=False)
+    order = Order.objects.get(customer=request.user, completed=False)
     if action == 'link_address':
         order.shipping_detail = ShippingDetail.objects.get(id=shipping_id)
+        order.save()
         return JsonResponse("order got updated with the address", safe=False)
     return JsonResponse("action not defined", safe=False)

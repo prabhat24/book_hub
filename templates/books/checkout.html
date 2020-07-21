@@ -17,7 +17,7 @@
                         <td>$ {{ order.total_order_cost }}</td>
                     </tr>
                 </table>
-                <a class="btn btn-success btn-block" type="submit">Proceed to Pay</a>
+                <a class="btn btn-success btn-block" href="{% url 'charge' %}" type="submit">Proceed to Pay</a>
                 <hr>
                 <div class="box-element">
                     <div class="cart-row">
@@ -44,7 +44,15 @@
         </div>
         <div class="col-lg-4">
             <div class="box-element">
-
+                <h5>Shipping Address</h5>
+                <hr>
+                <b>{{ order.shipping_detail.name  }}</b>
+                {{ order.shipping_detail.mob_no }}<br />
+                {{ order.shipping_detail.address }}
+                {{ order.shipping_detail.city }}
+                {{ order.shipping_detail.state }}
+                {{ order.shipping_detail.country }}
+                {{ order.shipping_detail.zip_code }}
             </div>
         </div>
     </div>

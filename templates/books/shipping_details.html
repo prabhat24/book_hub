@@ -47,7 +47,11 @@
     <div class="col-lg-6">
         <div class="form-group">
             <div class="box-element">
-                <h5>select shipping address</h5>
+                <div class='row'>
+                    <div class="col-lg-6"><h5>select shipping address</h5></div>
+                    <div class="col-lg-6"><a id="checkoutbtn" data-action="link_address" href="{% url 'checkout' %}"
+                                     class="btn btn-success btn-block" style="display:none;">Checkout</a></div>
+                </div>
                 <hr>
                 {% for i in shipping_details %}
                 <div class="form-check">
