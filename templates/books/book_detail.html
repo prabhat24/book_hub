@@ -9,10 +9,10 @@
 {% block icon_block %}
     <link rel="stylesheet" href="{% static 'css/book_detail.css' %}">
     <div id="cart-icon" class="form-inline my-2 my-lg-0">
-        <a href="% url 'cart' %" class="fa fa-shopping-cart" aria-hidden="true">
+        <a href="{% url 'cart' %}" class="fa fa-shopping-cart" aria-hidden="true">
         </a>
-        {% if total_card_items != 0 %}
-            <p id="cart-total">{{ total_card_items }}</p>
+        {% if total_cart_items != 0 %}
+            <p id="cart-total">{{ total_cart_items }}</p>
         {% endif %}
 
     </div>
@@ -51,7 +51,10 @@
     </div>
 
 </div>
-    <h3>Reviews</h3>
+<br>
+<hr>
+<br>
+    <h5>Reviews</h5>
     {% for item in reviews %}
         <div class="container-fluid">
 
@@ -90,7 +93,7 @@
     {% endfor %}
 <div class="container" id="review_form_div">
     {% if not user.username in all_reviewers %}
-        <form id="review_form" method="post" action="{% url 'book_detail' slug %}">
+        <form id="review_form" method="post" action="{% url 'book_detail' slug %}" style="padding-left:4%;">
             <div class="row">
             <div class="col-md-6">
             {% csrf_token %}

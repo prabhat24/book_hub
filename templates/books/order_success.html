@@ -1,0 +1,65 @@
+{% extends '_base.html' %}
+{% block content %}
+<div class="alert alert-danger" role="alert">
+    transaction completed successfully!!
+</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="well col-xs-10 col-sm-10 col-md-6 col-xs-offset-1 col-sm-offset-1 col-md-offset-3">
+            <div class="row">
+                <div class="col-xs-6 col-sm-6 col-md-6">
+                    <address>
+                        <strong>{{shipping_details.name}}</strong>
+                        <br>
+                        {{shipping_details.address}}
+                        <br>
+                        {{ shipping_details.city }}, {{ shipping_details.country }}  {{ shipping_details.zip_code }}
+                        <br>
+                        Ph : (+91) {{ shipping_details.mob_no }}
+                    </address>
+                </div>
+                <div class="col-xs-6 col-sm-6 col-md-6 text-right">
+                    <p>
+                        <em>Date: {{ order.order_date_time }}</em>
+                    </p>
+                    <p>
+                        <em>Receipt #: {{ order_transaction_id }}</em>
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="text-center">
+                    <h1>Receipt</h1>
+                </div>
+
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>#</th>
+                            <th class="text-center">Price</th>
+                            <th class="text-center">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in order_items %}
+                        <tr>
+                            <td class="col-md-9"><em>{{ item.book.title }}</em></td>
+                            <td class="col-md-1" style="text-align: center"> {{ item.quantity }} </td>
+                            <td class="col-md-1 text-center">$ {{ item.book.price }}</td>
+                            <td class="col-md-1 text-center">$ {{ item.total_item_cost }}</td>
+                        </tr>
+                        {% endfor %}
+                        <tr>
+                            <td>   </td>
+                            <td>   </td>
+                            <td class="text-right"><h4><strong>Total: </strong></h4></td>
+                            <td class="text-center text-danger"><h4><strong>$ {{ order.total_order_cost }}</strong></h4></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

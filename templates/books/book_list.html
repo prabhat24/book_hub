@@ -23,11 +23,10 @@
     <div id="cart-icon" class="form-inline my-2 my-lg-0">
         <a href="{% url 'cart' %}" class="fa fa-shopping-cart" aria-hidden="true">
         </a>
-        {% if total_card_items != 0 %}
-            <p id="cart-total">{{ total_card_items }}</p>
+        {% if total_cart_items != 0 %}
+            <p id="cart-total">{{ total_cart_items }}</p>
         {% endif %}
     </div>
-
 {% endblock icon_block %}
 
 {% block content %}
@@ -41,23 +40,21 @@
                 {% else %}
                 <img src="{% static 'images/not_avaliable_cover.jpg' %}" class="thumbnail card-img-top" alt="...">
                 {% endif %}
-            </div>
-            <div class="card-body">
-                <h10 class="card-title"><a href='{{ book.get_absolute_url }}'> {{ book.title }} </a></h10>
-                <p class="card-text"></p>
+                <div id="on-img-cart">
+                    <a id="add-to-cart" href="#" data-book="{{ book.id }}" data-action="add_book" class="update-cart">
+                        <i class="fa fa-cart-plus" aria-hidden="true"></i>
+                    </a>
+                </div>
+                <div id="on-img-buynow">
+                    <a id="buy-now" href="#">
+                        <i class="fa fa-credit-card-alt" aria-hidden="true"></i>
+                    </a>
+                </div>
             </div>
             <ul class="list-group list-group-flush">
-                <li class="list-group-item list-group-item-dark">author: {{ book.author }}</li>
+                <li class="list-group-item list-group-item-dark text-booktitle">author: {{ book.author }}</li>
                 <li class="list-group-item list-group-item-light"><strong>$ </strong>{{ book.price }}</li>
             </ul>
-            <div class="card-body">
-                <a id="add-to-cart" href="#" data-book="{{ book.id }}" data-action="add_book" class="update-cart btn button-secondary ">
-                    <i class="fa fa-cart-plus" aria-hidden="true"></i>
-                </a>
-                <a id="buy-now" href="#" class="btn button-secondary">
-                    <i class="fa fa-credit-card-alt" aria-hidden="true"> buy now</i>
-                </a>
-            </div>
         </div>
     </div>
     {% endfor %}

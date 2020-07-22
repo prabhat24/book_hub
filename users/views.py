@@ -1,8 +1,12 @@
-from django.views import generic
-from django.urls import reverse_lazy
-from .forms import CustomUserCreationForm
+from django.contrib.auth import logout
+from django.urls import reverse
+from django.http import HttpResponseRedirect
 
-class SignUp(generic.CreateView):
-    form_class = CustomUserCreationForm
-    success_url = reverse_lazy('login')
-    template_name = "registration/sign_up.html"
+def signup(request):
+    logout(request)
+    return HttpResponseRedirect(reverse('account_signup'))
+
+
+def login(request):
+    logout(request)
+    return HttpResponseRedirect(reverse('account_login'))

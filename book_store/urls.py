@@ -24,5 +24,6 @@ urlpatterns = [
                   path('accounts/', include("allauth.urls")),
                   path("", include("pages.urls")),
                   path("books/", include("books.urls")),
-                  path("gsearch/", GbookSearch.as_view(), name='gsearch')
+                  path("gsearch/", GbookSearch.as_view(), name='gsearch'),
+                  path("user/", include("users.urls")),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

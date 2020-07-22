@@ -7,15 +7,7 @@
 	background-color: #fff;
 }
 #add-to-cart {
-    float: left;
-    width: 26%;
-    font-size: 186%;
-    padding: 1%;
-}
-.btn-lg {
-    font-size: 0.8rem;
-    border-radius: 2.3rem;
-
+    font-size: 111%;
 }
 #cart-total {
 	display: block;
@@ -27,22 +19,32 @@
 	border-radius: 50%;
 	font-size: 14px;
 }
-.btn{
-    width: auto;
+#on-img-cart{
+    position: absolute;
+    bottom: 2%;
+    left: 2%;
+    padding: 5px;
+    background-color: black;
+    border: 2px solid #2f8039;
+    border-radius:2rem;
 }
-.button-secondary{
-    width: auto;
+#on-img-cart:hover{
+    border: 2px solid #50d80c;
 }
-#add-to-cart {
-    float: left;
-    width: 26%;
-    font-size: 186%;
-    padding: 1%;
+#on-img-buynow{
+    position: absolute;
+    bottom: 2%;
+    right: 2%;
+    padding: 5px;
+    background-color: black;
+    border: 2px solid #2f8039;
+    border-radius:2rem;
 }
-
+#on-img-buynow:hover{
+    border: 2px solid #50d80c;
+}
 #buy-now {
-    padding-top: 7%;
-    font-size: 116%;
+    font-size: 108%;
 }
 
 .box-element {
@@ -61,8 +63,11 @@ text-align: center;
 padding-left: 3%;
 padding-right: 3%;
 }
-
-a:link { COLOR: #C8CC3B ; TEXT-DECORATION: none; font-weight: normal }
-a:visited { COLOR: #C8CC3B ; TEXT-DECORATION: none; font-weight: normal }
-a:active { COLOR: #C8CC3B ; TEXT-DECORATION: none }
-a:hover { COLOR: #D5DA38 ; TEXT-DECORATION: none; font-weight: none }
+.text-booktitle {
+  font-size: 0.7rem;
+  line-height: 0.7rem;
+}
+a:link { COLOR: #2f8039 ; TEXT-DECORATION: none; font-weight: normal }
+a:visited { COLOR: #2f8039 ; TEXT-DECORATION: none; font-weight: normal }
+a:active { COLOR: #2f8039 ; TEXT-DECORATION: none }
+a:hover { COLOR: #50d80c ; TEXT-DECORATION: none; font-weight: none }

@@ -8,6 +8,7 @@ from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import View
+from django.contrib.auth import login
 
 from .forms import ReviewCreationForm, SearchBooksForm
 from .models import *
@@ -20,13 +21,43 @@ class BookList(View):
     template_name = "books/book_list.html"
     context_object_name = "books"
 
-    def get(self, request, *args, **kwargs):
-        order, created = Order.objects.get_or_create(customer=request.user, completed=False)
-        context = {
-            self.context_object_name: self.get_queryset(request),
-            'total_card_items': order.total_cart_items
+    def create_cookies(self, cookie_dict, response, **kwargs):
+        default_mapping = {
+            'total_cart_items': '0',
+            'cart': '{}',
+            'session_id': kwargs['session_id']
         }
-        return render(request, self.template_name, context)
+        for key, value in default_mapping.items():
+            if not cookie_dict.get(key):
+                response.set_cookie(key, value)
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            order, created = Order.objects.get_or_create(customer=request.user, completed=False)
+            context = {
+                'total_cart_items': order.total_cart_items,
+                self.context_object_name: self.get_queryset(request)
+            }
+            response = render(request, self.template_name, context)
+        else:
+            # create user
+            session_id = request.COOKIES.get('session_id', str(uuid.uuid4()))
+            username = 'anonymous_' + session_id
+            anonymous_user, created = get_user_model().objects.get_or_create(username=username, is_unknown=True)
+            if not hasattr(anonymous_user, 'backend'):
+                for backend in settings.AUTHENTICATION_BACKENDS:
+                    anonymous_user.backend = backend
+                    break
+            anonymous_user.save()
+            login(request, anonymous_user)
+            order, created = Order.objects.get_or_create(customer=anonymous_user, completed=False)
+            context = {
+                'total_cart_items': order.total_cart_items,
+                self.context_object_name: self.get_queryset(request)
+            }
+            response = render(request, self.template_name, context)
+            self.create_cookies(request.COOKIES, response, session_id=session_id)
+        return response
 
     def get_queryset(self, request):
         if 'query' in request.GET:
@@ -50,7 +81,7 @@ class BookDetail(View):
         self.context_data['reviews'] = book.reviews.all()
         self.context_data['all_reviewers'] = [review.reviewer.username for review in book.reviews.all()]
         self.context_data['slug'] = self.kwargs['slug']
-        self.context_data['total_card_items'] = order.total_cart_items
+        self.context_data['total_cart_items'] = order.total_cart_items
         return render(request, self.template_name, self.context_data)
 
     def post(self, request, *args, **kwargs):
@@ -71,7 +102,7 @@ class BookDetail(View):
         return render(request, self.template_name, self.context_data)
 
 
-class BuyBook(View):
+class BuyBooks(View):
 
     def get(self, request, *args, **kwargs):
         order = Order.objects.get(customer=request.user, completed=False)
@@ -81,6 +112,7 @@ class BuyBook(View):
         stripe.api_key = settings.STRIPE_SECRET_KEY
         publish_key = settings.STRIPE_PUBLISHABLE_KEY
         order = Order.objects.get(customer=request.user, completed=False)
+        order_items = order.order_items.all()
         amount = int(order.total_order_cost * 100)
         print(f'data:{request.POST}')
         stripe_token = request.POST['stripeToken']
@@ -96,7 +128,16 @@ class BuyBook(View):
             currency='inr',
             description='example',
         )
-        return HttpResponse('payment successful')
+        context = {
+            'order_transaction_id': order.transaction_id,
+            'shipping_details': order.shipping_detail,
+            'order_items': order_items,
+            'order': order,
+        }
+        # after verification
+        order.completed = True
+        order.save()
+        return render(request, 'books/order_success.html', context)
 
 
 class NewBook():
@@ -279,7 +320,27 @@ def ship(request):
     return render(request, 'books/shipping_details.html', context)
 
 
+def update_anonymous_cart(request):
+    post_data = json.loads(request.body)
+    book_id = post_data.get('productId', None)
+    action = post_data.get('action', None)
+    total_cart_items = int(request.COOKIES.get('total_cart_items', 0))
+    cart = json.loads(request.COOKIES.get('cart', '{}'))
+    if action == 'add_book':
+        if cart.get(book_id):
+            cart[book_id] += 1
+        else:
+            cart[book_id] = 1
+        total_cart_items += 1
+    response = JsonResponse("successfully added item", safe=False)
+    response.set_cookie('cart', json.dumps(cart))
+    response.set_cookie('total_cart_items', str(total_cart_items))
+    return response
+
+
 def update_cart(request):
+    if not request.user.is_authenticated:
+        return update_anonymous_cart(request)
     post_data = json.loads(request.body)
     book_id = post_data.get('productId', None)
     action = post_data.get('action', None)
@@ -297,7 +358,7 @@ def update_cart(request):
             order_item.save()
         if order_item.quantity == 0:
             order_item.delete()
-    return JsonResponse("successfilly added item", safe=False)
+    return JsonResponse("successfully added item", safe=False)
 
 
 def checkout(request):

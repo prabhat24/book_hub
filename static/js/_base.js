@@ -7,6 +7,7 @@ for(var i=0; i < update_btns.length; i++){
         console.log('book_id=', book_id, 'action=', action )
         if(user == 'AnonymousUser'){
             console.log('User is Not Authenticated')
+            updateUserOrder(book_id,action)
         }
         else{
             console.log('User is Authenticated')
