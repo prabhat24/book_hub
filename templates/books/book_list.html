@@ -14,10 +14,12 @@
             <div class="form-group">
                 <input class="form-control" type="search" placeholder="Search" name="query" aria-label="Search">
             </div>
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
+               <i class="fa fa-search" aria-hidden="true"></i>
+            </button>
         </div>
     </form>
-{% endblock %}
+{% endblock search %}
 
 {% block icon_block %}
     <div id="cart-icon" class="form-inline my-2 my-lg-0">
@@ -36,9 +38,11 @@
         <div class="card shadow-sm bg-dark sm-5 rounded" style="max-width: 100%;">
             <div class="col-sm-12">
                 {% if book.cover %}
-                <img  src="{{ book.thumbnail }}" class="thumbnail card-img-top" alt="image not available">
+                <a href='{{ book.get_absolute_url }}'>
+                    <img  src="{{ book.thumbnail }}" class="thumbnail card-img-top" alt="image not available">
+                </a>
                 {% else %}
-                <img src="{% static 'images/not_avaliable_cover.jpg' %}" class="thumbnail card-img-top" alt="...">
+                <img src="{% static 'images/not_avaliable_cover.jpg' %}"  class="thumbnail card-img-top" alt="...">
                 {% endif %}
                 <div id="on-img-cart">
                     <a id="add-to-cart" href="#" data-book="{{ book.id }}" data-action="add_book" class="update-cart">

@@ -11,8 +11,7 @@
                         <th>Items</th>
                         <th>Total</th>
                         <th>
-                            <a style="float:right; width:22%;" class="btn btn-success"
-                               href="{% url 'ship' %}">Checkout</a>
+                            <a id="add-shipping-details-btn" data-items="{{ order.total_cart_items  }}" style="float:right; width:22%;" class="btn btn-success">Checkout</a>
                         </th>
                     </tr>
                     <tr>
@@ -51,4 +50,5 @@
         </div>
     </div>
 </div>
+<script type="text/javascript" src="{% static 'js/cart.js' %}"></script>
 {% endblock %}

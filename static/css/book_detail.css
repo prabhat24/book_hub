@@ -419,3 +419,18 @@
 	border-radius: 50%;
 	font-size: 14px;
 }
+#id_review{
+    height: 98px;
+}
+#review_form_div{
+    background: white
+}
+#review-header{
+    color: white;
+    background: #273238;
+    display: inline-block;
+    text-align: center;
+}
+#review-container{
+    box-shadow: hsl(0, 0%, 80%) 0 0 16px;
+}

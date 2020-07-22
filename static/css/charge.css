@@ -7,7 +7,7 @@
 
   border: 1px solid transparent;
   border-radius: 4px;
-  background-color: white;
+  background-color: #7488AA;
 
   box-shadow: 0 1px 3px 0 #e6ebf1;
   -webkit-transition: box-shadow 150ms ease;
@@ -24,4 +24,21 @@
 
 .StripeElement--webkit-autofill {
   background-color: #fefde5 !important;
+}
+#payment-form{
+    padding:6%
+}
+.custom-form{
+    background: linear-gradient(45deg, #484d67, transparent);
+    width: 70%;
+    display: inline-block;
+    border-radius: 23px;
+}
+.custom-cont{
+    text-align: -webkit-center;
+    background: white;
+}
+.btn-success{
+    background: #FCD669;
+    radius: 1rad;
 }

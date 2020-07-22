@@ -1,19 +1,22 @@
-import os
-import uuid
 import json
+import os
+
 import requests
 import stripe
 from django.conf import settings
+from django.contrib.auth import login
 from django.db.models import Q
 from django.http import HttpResponse
+from django.http import JsonResponse
 from django.shortcuts import render
+from django.utils.decorators import method_decorator
 from django.views import View
-from django.contrib.auth import login
+from django.contrib.auth.models import Group
 
+from .decorators import authenticate_roles
 from .forms import ReviewCreationForm, SearchBooksForm
 from .models import *
 from .scripts import GoogleBooksClient
-from django.http import JsonResponse
 
 
 class BookList(View):
@@ -44,10 +47,12 @@ class BookList(View):
             session_id = request.COOKIES.get('session_id', str(uuid.uuid4()))
             username = 'anonymous_' + session_id
             anonymous_user, created = get_user_model().objects.get_or_create(username=username, is_unknown=True)
+            customer_role = Group.objects.get(name='customer')
             if not hasattr(anonymous_user, 'backend'):
                 for backend in settings.AUTHENTICATION_BACKENDS:
                     anonymous_user.backend = backend
                     break
+            anonymous_user.groups.add(customer_role)
             anonymous_user.save()
             login(request, anonymous_user)
             order, created = Order.objects.get_or_create(customer=anonymous_user, completed=False)
@@ -66,6 +71,7 @@ class BookList(View):
         return self.model.objects.all()
 
 
+@method_decorator(authenticate_roles(allowed_roles=['admin', 'customer']), name='dispatch')
 class BookDetail(View):
     model = Book
     template_name = "books/book_detail.html"
@@ -102,11 +108,14 @@ class BookDetail(View):
         return render(request, self.template_name, self.context_data)
 
 
+@method_decorator(authenticate_roles(allowed_roles=['admin', 'customer']), name='dispatch')
 class BuyBooks(View):
-
     def get(self, request, *args, **kwargs):
         order = Order.objects.get(customer=request.user, completed=False)
-        return render(request, 'books/charge.html')
+        context = {
+            'order': order
+        }
+        return render(request, 'books/charge.html', context)
 
     def post(self, request, *args, **kwargs):
         stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -116,7 +125,6 @@ class BuyBooks(View):
         amount = int(order.total_order_cost * 100)
         print(f'data:{request.POST}')
         stripe_token = request.POST['stripeToken']
-
         customer = stripe.Customer.create(
             email=request.user.email,
             name=request.user.username,
@@ -156,6 +164,7 @@ class NewBook():
         self.description = description
 
 
+@method_decorator(authenticate_roles(allowed_roles=['seller', 'admin']), name='dispatch')
 class GbookSearch(View):
     context = {
         'form': None,
@@ -210,6 +219,7 @@ class GbookSearch(View):
         return render(request, 'books/gbook_search.html', self.context)
 
 
+@authenticate_roles(allowed_roles=['seller', 'admin'])
 def add_book(request, book_id):
     global required_book
     if request.method == "GET":
@@ -267,6 +277,7 @@ def add_book(request, book_id):
         return HttpResponse("books added")
 
 
+@authenticate_roles(allowed_roles=['customer', 'admin'])
 def like_review(request):
     review_id = None
     if request.method == 'GET':
@@ -281,6 +292,7 @@ def like_review(request):
     return HttpResponse(likes)
 
 
+@authenticate_roles(allowed_roles=['customer', 'admin'])
 def cart(request):
     order, created = Order.objects.get_or_create(customer=request.user, completed=False)
     order_items = order.order_items.all()
@@ -292,6 +304,7 @@ def cart(request):
     return render(request, 'books/cart.html', context)
 
 
+@authenticate_roles(allowed_roles=['customer', 'admin'])
 def ship(request):
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -320,6 +333,7 @@ def ship(request):
     return render(request, 'books/shipping_details.html', context)
 
 
+@authenticate_roles(allowed_roles=['customer', 'admin'])
 def update_anonymous_cart(request):
     post_data = json.loads(request.body)
     book_id = post_data.get('productId', None)
@@ -338,6 +352,7 @@ def update_anonymous_cart(request):
     return response
 
 
+@authenticate_roles(allowed_roles=['customer', 'admin'])
 def update_cart(request):
     if not request.user.is_authenticated:
         return update_anonymous_cart(request)
@@ -361,6 +376,7 @@ def update_cart(request):
     return JsonResponse("successfully added item", safe=False)
 
 
+@authenticate_roles(allowed_roles=['customer', 'admin'])
 def checkout(request):
     order = Order.objects.get(customer=request.user, completed=False)
     order_items = order.order_items.all()
@@ -371,6 +387,7 @@ def checkout(request):
     return render(request, 'books/checkout.html', context)
 
 
+@authenticate_roles(allowed_roles=['customer', 'admin'])
 def link_address(request):
     post_data = json.loads(request.body)
     shipping_id = post_data.get('shippingId')
@@ -381,3 +398,4 @@ def link_address(request):
         order.save()
         return JsonResponse("order got updated with the address", safe=False)
     return JsonResponse("action not defined", safe=False)
+

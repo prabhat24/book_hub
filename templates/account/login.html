@@ -17,7 +17,6 @@
             <div class="login100-pic js-tilt" data-tilt>
                 <img src="{% static 'images/login_images/img-01.png' %}" alt="IMG">
             </div>
-
             <form class="login100-form validate-form" method="post" action="/accounts/login/">
                 {% csrf_token %}
                 <div class="">
@@ -91,8 +90,6 @@
 		$('.js-tilt').tilt({
 			scale: 1.1
 		})
-
-
 </script>
 <!--===============================================================================================-->
 <script src="{% static 'js/login.js' %}"></script>
