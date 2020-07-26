@@ -23,10 +23,22 @@ SECRET_KEY = '5psab17k!iuoby)jch#7pd_ifjjuch86tkhxii)w-93nbaovsk'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["0.0.0.0",]
+ALLOWED_HOSTS = ["0.0.0.0", "bookhub24.herokuapp.com"]
 
 # Application definition
-
+ENVIRONMENT = os.environ.get('ENVIRONMENT')
+if ENVIRONMENT == 'production':
+    SECURE_BROWSER_XSS_FILTER = True
+    X_FRAME_OPTIONS = 'DENY'
+    SECURE_SSL_REDIRECT = True
+    SECURE_HSTS_SECONDS = 3600
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    DEBUG = False
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -179,8 +191,8 @@ if DEBUG:
     STRIPE_PUBLISHABLE_KEY = "pk_test_51H1qmpKbsj1qv1KZBpeJTRqLg6xbcJMjI7ZuWdcAagLeAYHPW5TmVwoOIHTeKaw7UvS9Zs94pcNG2EYMX2Hc0c3R00ctFUjx12"
     STRIPE_SECRET_KEY = "sk_test_51H1qmpKbsj1qv1KZaghpiAiBakNLfVFgUNO6WLIanU8HgqkSqYBzBzn5rUyf8ERWH8FUp93Ni8cXP4j7snvO5ZQ000AT8WtITm"
 else:
-    STRIPE_PUBLISHABLE_KEY = "<enter your prod publishable key>"
-    STRIPE_SECRET_KEY = "<enter your prod secret key>"
+    STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY', None)
+    STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY', None)
 
 import dj_database_url
 db_from_env = dj_database_url.config(conn_max_age=500)
