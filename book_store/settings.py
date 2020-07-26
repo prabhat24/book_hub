@@ -23,7 +23,7 @@ SECRET_KEY = '5psab17k!iuoby)jch#7pd_ifjjuch86tkhxii)w-93nbaovsk'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["0.0.0.0", "bookhub24.herokuapp.com",]
+ALLOWED_HOSTS = ["0.0.0.0", "book-hub-24-7.herokuapp.com",]
 
 # Application definition
 ENVIRONMENT = os.environ.get('ENVIRONMENT')
