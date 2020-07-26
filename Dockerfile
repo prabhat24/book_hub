@@ -6,8 +6,8 @@ WORKDIR /book_hub
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-COPY Pipfile Pipfile.lock /book_hub/
+COPY requirements.txt /book_hub/
 
-RUN pip install pipenv && pipenv install --system --ignore-pipfile
+RUN pip install -r requirements.txt
 
 COPY . /book_hub/

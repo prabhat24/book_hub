@@ -11,7 +11,7 @@ services:
       - postgres_data:/var/lib/postgresql/data/
   web:
     build: .
-    command: python /book_hub/manage.py runserver 0.0.0.0:8000
+    command: gunicorn book_store.wsgi -b 0.0.0.0:8000
     volumes:
      - .:/book_hub
     ports:
