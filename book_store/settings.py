@@ -23,7 +23,7 @@ SECRET_KEY = '5psab17k!iuoby)jch#7pd_ifjjuch86tkhxii)w-93nbaovsk'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["0.0.0.0", "bookhub24.herokuapp.com"]
+ALLOWED_HOSTS = ["0.0.0.0", "bookhub24.herokuapp.com",]
 
 # Application definition
 ENVIRONMENT = os.environ.get('ENVIRONMENT')
@@ -39,6 +39,7 @@ if ENVIRONMENT == 'production':
     CSRF_COOKIE_SECURE = True
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     DEBUG = False
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -106,7 +107,7 @@ DATABASES = {
         'NAME': 'postgres',
         'USER': 'postgres',
         'PASSWORD': 'postgres',
-        'HOST': 'db',
+        'HOST': '127.0.0.1',
         'PORT': 5432,
     }
 }
