@@ -23,7 +23,7 @@ SECRET_KEY = '5psab17k!iuoby)jch#7pd_ifjjuch86tkhxii)w-93nbaovsk'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["0.0.0.0",]
 
 # Application definition
 
@@ -54,7 +54,7 @@ INSTALLED_APPS = [
 SITE_ID = 2
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
+ 'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',

@@ -398,4 +398,3 @@ def link_address(request):
         order.save()
         return JsonResponse("order got updated with the address", safe=False)
     return JsonResponse("action not defined", safe=False)
-
