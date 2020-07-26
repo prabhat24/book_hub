@@ -1,4 +1,4 @@
 .idea/
 *.sqlite3
 Pipfile
-.env
+prod.env

@@ -8,5 +8,7 @@ release:
   image: web
   command:
     - python manage.py collectstatic --noinput
+    - python manage.py makemigrations
+    - python manage.py migrate
 run:
-  web: gunicorn book_store.wsgi -b 0.0.0.0:8000
+  web: python /book_hub/manage.py runserver 0.0.0.0:8000
