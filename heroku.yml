@@ -9,4 +9,4 @@ release:
   command:
     - python manage.py collectstatic --noinput
 run:
-  web: python /book_hub/manage.py runserver 0.0.0.0:8000
+  web: gunicorn book_store.wsgi -b 0.0.0.0:8000
