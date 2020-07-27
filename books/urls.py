@@ -3,7 +3,7 @@ from .views import *
 
 urlpatterns = [
     path("", BookList.as_view(), name='books'),
-    path("<slug:slug>", BookDetail.as_view(), name='book_detail'),
+    path("<uuid:id>", BookDetail.as_view(), name='book_detail'),
     path("add_book/<int:book_id>", add_book, name="add_book"),
     path("charge/", BuyBooks.as_view(), name='charge'),
     path("like_review/", like_review, name='like_review'),

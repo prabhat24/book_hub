@@ -1,18 +1,19 @@
+import uuid
+
 from django.contrib.auth import get_user_model
 from django.db import models
-from django.template.defaultfilters import slugify
 from django.urls import reverse
-import uuid
+
 from .exceptions import NotValidISBN
 
 
 class Book(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     title = models.CharField(max_length=500)
     author = models.CharField(max_length=500)
     price = models.DecimalField(max_digits=6, decimal_places=2)
     # cover = models.ImageField(upload_to="covers/", blank=True)
     cover = models.URLField(max_length=1000, blank=True, null=True)
-    slug = models.SlugField(null=True, unique=True, max_length=500)
     publisher = models.CharField(max_length=200, null=True)
     isbn10 = models.CharField(max_length=10, null=True)
     isbn13 = models.CharField(max_length=13, blank=True)
@@ -31,11 +32,10 @@ class Book(models.Model):
         if self.isbn13:
             if not len(self.isbn13) == 13:
                 raise NotValidISBN(13, "length of ISBN not equal to 13")
-        self.slug = slugify(self.title)
         super(Book, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse('book_detail', kwargs={'slug': self.slug})
+        return reverse('book_detail', kwargs={'id': self.id})
 
     @property
     def thumbnail(self):

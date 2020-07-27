@@ -80,20 +80,20 @@ class BookDetail(View):
 
     def get(self, request, *args, **kwargs):
         form = self.form_class()
-        book = self.model.objects.filter(slug=self.kwargs['slug']).first()
+        book = self.model.objects.get(id=self.kwargs['id'])
         order, created = Order.objects.get_or_create(customer=request.user, completed=False)
+        self.context_data['id'] = self.kwargs['id']
         self.context_data['book'] = book
         self.context_data['form'] = form
         self.context_data['reviews'] = book.reviews.all()
         self.context_data['all_reviewers'] = [review.reviewer.username for review in book.reviews.all()]
-        self.context_data['slug'] = self.kwargs['slug']
         self.context_data['total_cart_items'] = order.total_cart_items
         return render(request, self.template_name, self.context_data)
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
-        self.context_data['slug'] = self.kwargs['slug']
-        book = self.model.objects.filter(slug=self.kwargs['slug']).first()
+        self.context_data['id'] = self.kwargs['id']
+        book = self.model.objects.get(id=self.kwargs['id'])
         self.context_data['all_reviewers'] = [review.reviewer.username for review in book.reviews.all()]
         self.context_data['book'] = book
         if form.is_valid():
