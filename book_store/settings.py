@@ -23,7 +23,7 @@ SECRET_KEY = '5psab17k!iuoby)jch#7pd_ifjjuch86tkhxii)w-93nbaovsk'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["0.0.0.0", "book-hub-24-7.herokuapp.com",]
+ALLOWED_HOSTS = ["0.0.0.0", "book-hub-24-7.herokuapp.com", "127.0.0.1"]
 
 # Application definition
 ENVIRONMENT = os.environ.get('ENVIRONMENT')
@@ -68,7 +68,7 @@ INSTALLED_APPS = [
 SITE_ID = 2
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 MIDDLEWARE = [
- 'django.middleware.security.SecurityMiddleware',
+    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -196,5 +196,6 @@ else:
     STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY', None)
 
 import dj_database_url
+
 db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES['default'].update(db_from_env)

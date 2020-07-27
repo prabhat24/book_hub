@@ -32,7 +32,12 @@
                 </div>
                 {% for item in order_items %}
                 <div class="cart-row">
-                    <div style="flex:2"><img class="row-image" src="{{ item.book.thumbnail }}">
+                    <div style="flex:2">
+                        {% if item.book.cover %}
+                            <img class="row-image" src="{{ item.book.thumbnail }}">
+                        {% else %}
+                            <img class="row-image" src="{% static 'images/not_avaliable_cover.jpg' %}">
+                        {% endif %}
                     </div>
                     <div style="flex:2"><p>{{ item.book.title }}</p></div>
                     <div style="flex:1"><p>$ {{ item.book.price }}</p></div>

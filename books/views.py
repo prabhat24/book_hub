@@ -241,39 +241,19 @@ def add_book(request, book_id):
             published_date=post_values.get('published_date'),
             pages=int(post_values.get('pages')),
             language=post_values.get('language'),
-            description=post_values.get('description', None)
+            description=post_values.get('description', None),
         )
-        cover = None
-        if 'cover' in request.FILES:
-            cover = request.FILES['cover']
-            created_book = Book.objects.create(title=book.title,
-                                               author=book.author,
-                                               price=book.price,
-                                               publisher=book.publisher,
-                                               isbn10=book.isbn10,
-                                               published_date=book.published_date,
-                                               language=book.language,
-                                               cover=cover,
-                                               description=book.description
-                                               )
-        else:
-            cover_url = required_book.get('cover', None)
-            filename = str(uuid.uuid1()) + ".jpeg"
-            cover_path = os.path.join(os.path.join(settings.MEDIA_ROOT, 'covers'), filename)
-            respose = requests.get(cover_url, allow_redirects=True)
-            with open(cover_path, 'wb+') as f:
-                f.write(respose.content)
-                created_book = Book.objects.create(title=book.title,
-                                                   author=book.author,
-                                                   price=book.price,
-                                                   publisher=book.publisher,
-                                                   isbn10=book.isbn10,
-                                                   published_date=book.published_date,
-                                                   language=book.language,
-                                                   description=book.description
-                                                   )
-                created_book.cover.save(filename, f)
-                created_book.save()
+        cover_url = required_book.get('cover', None)
+        created_book = Book.objects.create(title=book.title,
+                                           author=book.author,
+                                           price=book.price,
+                                           publisher=book.publisher,
+                                           isbn10=book.isbn10,
+                                           published_date=book.published_date,
+                                           language=book.language,
+                                           description=book.description,
+                                           cover=cover_url,
+                                           )
         return HttpResponse("books added")
 
 

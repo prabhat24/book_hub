@@ -38,13 +38,13 @@
         <div class="card shadow-sm bg-dark sm-5 rounded" style="max-width: 100%;">
             <div class="col-sm-12">
                 {% if book.cover %}
-                <a href='{{ book.get_absolute_url }}'>
-                    <img  src="{{ book.thumbnail }}" class="thumbnail card-img-top" alt="image not available">
-                </a>
+                    <a href='{{ book.get_absolute_url }}'>
+                        <img  src="{{ book.thumbnail }}" class="thumbnail card-img-top" alt="img not available">
+                    </a>
                 {% else %}
-                <a href='{{ book.get_absolute_url }}'>
-                    <img src="{% static 'images/not_avaliable_cover.jpg' %}"  class="thumbnail card-img-top" alt="...">
-                </a>
+                    <a href='{{ book.get_absolute_url }}'>
+                        <img src="{% static 'images/not_avaliable_cover.jpg' %}"  class="thumbnail card-img-top" alt="...">
+                    </a>
                 {% endif %}
                 <div id="on-img-cart">
                     <a id="add-to-cart" href="#" data-book="{{ book.id }}" data-action="add_book" class="update-cart">
