@@ -242,8 +242,8 @@ def add_book(request, book_id):
             pages=int(post_values.get('pages')),
             language=post_values.get('language'),
             description=post_values.get('description', None),
+            cover=post_values.get('cover', None)
         )
-        cover_url = required_book.get('cover', None)
         created_book = Book.objects.create(title=book.title,
                                            author=book.author,
                                            price=book.price,
@@ -252,7 +252,7 @@ def add_book(request, book_id):
                                            published_date=book.published_date,
                                            language=book.language,
                                            description=book.description,
-                                           cover=cover_url,
+                                           cover=book.cover
                                            )
         return HttpResponse("books added")
 
@@ -378,5 +378,3 @@ def link_address(request):
         order.save()
         return JsonResponse("order got updated with the address", safe=False)
     return JsonResponse("action not defined", safe=False)
-
-
