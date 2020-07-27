@@ -27,7 +27,8 @@ ALLOWED_HOSTS = ["0.0.0.0", "book-hub-24-7.herokuapp.com", "127.0.0.1"]
 
 # Application definition
 ENVIRONMENT = os.environ.get('ENVIRONMENT')
-if ENVIRONMENT == 'production':
+SECURITY_SETTINGS = os.environ.get('SECURITY_SETTINGS')
+if SECURITY_SETTINGS == 'high':
     SECURE_BROWSER_XSS_FILTER = True
     X_FRAME_OPTIONS = 'DENY'
     SECURE_SSL_REDIRECT = True
@@ -177,9 +178,7 @@ ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 3
 
 # SMTP SERVER DETAILS
-if DEBUG == True:
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-else:
+if ENVIRONMENT == 'production':
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
     EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
     EMAIL_HOST = 'smtp.gmail.com'
@@ -187,13 +186,16 @@ else:
     EMAIL_USE_TLS = True
     EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 
-# set up the stripe payments
-if DEBUG:
-    STRIPE_PUBLISHABLE_KEY = "pk_test_51H1qmpKbsj1qv1KZBpeJTRqLg6xbcJMjI7ZuWdcAagLeAYHPW5TmVwoOIHTeKaw7UvS9Zs94pcNG2EYMX2Hc0c3R00ctFUjx12"
-    STRIPE_SECRET_KEY = "sk_test_51H1qmpKbsj1qv1KZaghpiAiBakNLfVFgUNO6WLIanU8HgqkSqYBzBzn5rUyf8ERWH8FUp93Ni8cXP4j7snvO5ZQ000AT8WtITm"
-else:
+    # stripe secrets
     STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY', None)
     STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY', None)
+
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+    # test stripe secrets
+    STRIPE_PUBLISHABLE_KEY = "pk_test_51H1qmpKbsj1qv1KZBpeJTRqLg6xbcJMjI7ZuWdcAagLeAYHPW5TmVwoOIHTeKaw7UvS9Zs94pcNG2EYMX2Hc0c3R00ctFUjx12"
+    STRIPE_SECRET_KEY = "sk_test_51H1qmpKbsj1qv1KZaghpiAiBakNLfVFgUNO6WLIanU8HgqkSqYBzBzn5rUyf8ERWH8FUp93Ni8cXP4j7snvO5ZQ000AT8WtITm"
 
 import dj_database_url
 
