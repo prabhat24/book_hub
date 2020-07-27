@@ -43,6 +43,7 @@ class Book(models.Model):
         else:
             return ""
 
+
 class Review(models.Model):
     review = models.CharField(max_length=1000)
     book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='reviews')
@@ -83,10 +84,10 @@ class Order(models.Model):
     order_date_time = models.DateTimeField(auto_now=True)
     completed = models.BooleanField(default=False, blank=True)
     shipping_detail = models.ForeignKey(ShippingDetail,
-                                         on_delete=models.SET_NULL,
-                                         null=True,
-                                         related_name='assigned_orders',
-                                         blank=True)
+                                        on_delete=models.SET_NULL,
+                                        null=True,
+                                        related_name='assigned_orders',
+                                        blank=True)
 
     @property
     def total_order_cost(self):

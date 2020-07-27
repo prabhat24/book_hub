@@ -42,7 +42,9 @@
                     <img  src="{{ book.thumbnail }}" class="thumbnail card-img-top" alt="image not available">
                 </a>
                 {% else %}
-                <img src="{% static 'images/not_avaliable_cover.jpg' %}"  class="thumbnail card-img-top" alt="...">
+                <a href='{{ book.get_absolute_url }}'>
+                    <img src="{% static 'images/not_avaliable_cover.jpg' %}"  class="thumbnail card-img-top" alt="...">
+                </a>
                 {% endif %}
                 <div id="on-img-cart">
                     <a id="add-to-cart" href="#" data-book="{{ book.id }}" data-action="add_book" class="update-cart">
