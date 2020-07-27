@@ -14,10 +14,10 @@ class Book(models.Model):
     cover = models.URLField(max_length=1000, blank=True, null=True)
     slug = models.SlugField(null=True, unique=True, max_length=500)
     publisher = models.CharField(max_length=200, null=True)
-    isbn10 = models.CharField(max_length=10)
-    isbn13 = models.CharField(max_length=13)
+    isbn10 = models.CharField(max_length=10, null=True)
+    isbn13 = models.CharField(max_length=13, blank=True)
     published_date = models.DateField(null=True, blank=True)
-    pages = models.ImageField(null=True, blank=True)
+    pages = models.IntegerField(null=True, blank=True)
     language = models.CharField(max_length=10)
     description = models.TextField(max_length=1000)
 
