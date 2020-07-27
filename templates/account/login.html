@@ -10,7 +10,11 @@
 <!--===============================================================================================-->
 <link rel="stylesheet" type="text/css" href="{% static 'css/login_util.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'css/login_main.css' %}">
-
+{% if form.errors %}
+    <div class="alert alert-danger row" role="alert">
+    {{ form.errors }}
+    </div>
+{% endif %}
 <div class="limiter">
     <div class="container-login100">
         <div class="wrap-login100">
