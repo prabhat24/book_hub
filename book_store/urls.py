@@ -20,7 +20,7 @@ from django.conf import settings
 from books.views import GbookSearch
 
 urlpatterns = [
-                  path('admin/', admin.site.urls),
+                  path('with_admin/', admin.site.urls),
                   path('accounts/', include("allauth.urls")),
                   path("", include("pages.urls")),
                   path("books/", include("books.urls")),

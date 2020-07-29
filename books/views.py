@@ -47,12 +47,10 @@ class BookList(View):
             session_id = request.COOKIES.get('session_id', str(uuid.uuid4()))
             username = 'anonymous_' + session_id
             anonymous_user, created = get_user_model().objects.get_or_create(username=username, is_unknown=True)
-            customer_role = Group.objects.get(name='customer')
             if not hasattr(anonymous_user, 'backend'):
                 for backend in settings.AUTHENTICATION_BACKENDS:
                     anonymous_user.backend = backend
                     break
-            anonymous_user.groups.add(customer_role)
             anonymous_user.save()
             login(request, anonymous_user)
             order, created = Order.objects.get_or_create(customer=anonymous_user, completed=False)
